@@ -1,0 +1,18 @@
+.backgroundnightcolor {
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    left: 0;
+    top: 0;
+    background: linear-gradient(to bottom, #050313 0%, #0f0c1f 100%);
+}
+
+.backgroundstars {
+
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    left: 0;
+    top: 0;
+    background-size: 100vw;
+}
