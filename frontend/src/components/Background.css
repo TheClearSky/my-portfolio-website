@@ -15,4 +15,5 @@
     left: 0;
     top: 0;
     background-size: 100vw;
+    z-index: -2;
 }

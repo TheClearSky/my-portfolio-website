@@ -1,0 +1,156 @@
+@font-face {
+    font-family: Mufanpfs;
+    src: url('./../assets/fonts/Mufanpfs.otf');
+}
+
+/*
+    Hamburger Styles
+*/
+.hamburger {
+    display: none;
+    position: relative;
+    right: 0px;
+    top: 0px;
+    width: 50px;
+    height: 40px;
+}
+
+.openedmenu .hamburger{
+    display: block;
+}
+
+.hamburger .bar {
+    padding: 0;
+    width: 40px;
+    height: 6px;
+    background-color: rgb(255, 255, 255);
+    display: block;
+    border-radius: 4px;
+    transition: all 0.5s ease-in-out;
+    position: absolute;
+}
+.openedmenu .hamburger .bar{
+    background-color: rgb(0, 0, 0);
+}
+/*
+    Hamburger animation
+*/
+.bar1 {
+    top: 0;
+}
+.bar2,
+.bar3 {
+    top: 17px;
+}
+.bar3 {
+    right: 0;
+}
+.bar4 {
+    bottom: 0;
+}
+.openedmenu .hamburger .bar1 {
+    transform: translateX(40px);
+    background-color: transparent;
+}
+.openedmenu .hamburger .bar2 {
+    transform: translateX(6px) rotate(45deg);
+}
+.openedmenu .hamburger .bar3 {
+    transform: translateX(-6px) rotate(-45deg);
+}
+.openedmenu .hamburger .bar4 {
+    transform: translateX(-40px);
+    background-color: transparent;
+}
+
+
+
+.navbar {
+    width: 100%;
+    font-size: 2.5rem;
+    padding: 0.6em 2em;
+}
+
+.navbuttons,
+.navbar {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.openedmenu .navbuttons {
+    /*
+        fix position
+        move to middle of the page
+        move back by half of self size to center it, taking into account own size
+    */
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotateZ(-40deg);
+
+
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    gap: 5vh;
+}
+
+.navbutton {
+
+    color: #FFFFFF;
+    font-family: Mufanpfs;
+    font-size: 2rem;
+    padding-inline: 0.7em;
+}
+
+.openedmenu .navbutton {
+    position: static;
+    z-index: 10;
+    background: linear-gradient(200deg, #FFF 7%, rgba(217, 217, 217, 0) 7%, rgba(217, 217, 217, 0) 100%);
+    border-radius: 4px;
+    padding: 0.3em 0.7em;
+    border: solid 2px white;
+    text-align: center;
+    transform: rotateZ(40deg);
+}
+
+.activenavbutton {
+    color: #82C5F1;
+    text-decoration: underline;
+    text-decoration-color: white;
+    text-underline-offset: 0.4em;
+}
+
+.logo {
+    color: #FFFFFF;
+    font-family: Mufanpfs;
+}
+
+
+.backgroundblur {
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    background-color: transparent;
+    transition: backdrop-filter 0.5s ease-in-out;
+}
+
+.openedmenu.backgroundblur {
+    background: linear-gradient(220deg, #D9D9D9 25%, rgba(217, 217, 217, 0) 25%, rgba(217, 217, 217, 0) 28%, #D9D9D9 28%,#D9D9D9 31%, rgba(217, 217, 217, 0) 31%, rgba(217, 217, 217, 0) 72%, #D9D9D9 72%,#D9D9D9 73%, rgba(217, 217, 217, 0) 73%, rgba(217, 217, 217, 0) 75%, #D9D9D9 75%);
+    backdrop-filter: blur(5px);
+}
+
+
+
+@media screen and (max-width: 800px) {
+    .hamburger {
+        display: block;
+    }
+    
+    .navbuttons {
+        display: none;
+    }
+}
