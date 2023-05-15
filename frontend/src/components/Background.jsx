@@ -11,11 +11,12 @@ export default function Background({children:p_children}) {
         return stopDrawing;
     },[canvas])
     return (
-        <div className="backgroundnightcolor">
-            <canvas ref={canvas} className="backgroundstars">
-            </canvas>
+        <>
+            <div className="backgroundnightcolor">
+                <canvas ref={canvas} className="backgroundstars">
+                </canvas>
+            </div>
             {p_children}
-        </div>
-
-  )
+        </>
+    )
 }

@@ -13,6 +13,7 @@
     top: 0px;
     width: 50px;
     height: 40px;
+    z-index: 2;
 }
 
 .openedmenu .hamburger{
@@ -23,7 +24,7 @@
     padding: 0;
     width: 40px;
     height: 6px;
-    background-color: rgb(255, 255, 255);
+    background-color: #ffffff;
     display: block;
     border-radius: 4px;
     transition: all 0.5s ease-in-out;
@@ -76,6 +77,7 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    z-index: 2;
 }
 
 .openedmenu .navbuttons {
@@ -89,8 +91,6 @@
     left: 50%;
     transform: translate(-50%, -50%) rotateZ(-40deg);
 
-
-    z-index: 10;
     display: flex;
     flex-direction: column;
     gap: 5vh;
@@ -98,7 +98,7 @@
 
 .navbutton {
 
-    color: #FFFFFF;
+    color: #ffffffd1;
     font-family: Mufanpfs;
     font-size: 2rem;
     padding-inline: 0.7em;
@@ -106,7 +106,6 @@
 
 .openedmenu .navbutton {
     position: static;
-    z-index: 10;
     background: linear-gradient(200deg, #FFF 7%, rgba(217, 217, 217, 0) 7%, rgba(217, 217, 217, 0) 100%);
     border-radius: 4px;
     padding: 0.3em 0.7em;
@@ -123,12 +122,21 @@
 }
 
 .logo {
-    color: #FFFFFF;
+    color: #ffffffd1;
     font-family: Mufanpfs;
+    z-index: 2;
 }
 
 
 .backgroundblur {
+    z-index: 1; 
+    /*
+        stars and background color have z-index:-2 (due to stacking context)
+        backgroundblur has z-index:1
+        rest everything has z-index:default
+        Navbuttons,hamburger and logo get z-index :2 always
+    */
+    display: none;
     width: 100vw;
     height: 100vh;
     position: fixed;
@@ -138,9 +146,10 @@
     transition: backdrop-filter 0.5s ease-in-out;
 }
 
-.openedmenu.backgroundblur {
+.openedmenu .backgroundblur {
+    display: block;
     background: linear-gradient(220deg, #D9D9D9 25%, rgba(217, 217, 217, 0) 25%, rgba(217, 217, 217, 0) 28%, #D9D9D9 28%,#D9D9D9 31%, rgba(217, 217, 217, 0) 31%, rgba(217, 217, 217, 0) 72%, #D9D9D9 72%,#D9D9D9 73%, rgba(217, 217, 217, 0) 73%, rgba(217, 217, 217, 0) 75%, #D9D9D9 75%);
-    backdrop-filter: blur(5px);
+    backdrop-filter: blur(10px);
 }
 
 

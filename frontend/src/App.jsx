@@ -1,13 +1,19 @@
 import './App.css'
 import Background from './components/Background';
 import Navbar from './components/Navbar';
+import RowContainer from './components/RowContainer';
+import Canvas3D from './components/Canvas3D';
+import NameCard from './components/NameCard';
 
 function App() {
   return (
     <>
         <Background>
-        {/* <div style={{zIndex:5,position:'relative',color:'#FFFFFF'}}>Children</div> */}
         <Navbar/>
+        <RowContainer>
+          <Canvas3D/>
+          <NameCard/>
+        </RowContainer>
         </Background>
     </>
   )

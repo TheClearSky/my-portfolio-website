@@ -5,8 +5,9 @@ export default function Navbar() {
     let [openedMenu,setOpenedMenu]=useState(false);
     function toggleOpenedMenu(){setOpenedMenu((prevOpenedMenu)=>!prevOpenedMenu)};
   return (
-    <div className={"backgroundblur"+(openedMenu?" openedmenu":"")}>
-      <nav className="navbar">
+    
+      <nav className={"navbar"+(openedMenu?" openedmenu":"")}>
+          <div className={"backgroundblur"+(openedMenu?" openedmenu":"")}></div>
           <div className="logo">ClearSky</div>
 
           <div className="hamburger" onClick={toggleOpenedMenu}>
@@ -22,7 +23,7 @@ export default function Navbar() {
               <div id="contact" className="navbutton">Contact</div>
               <div id="theme" className="navbutton">Theme</div>
           </div>
+          
       </nav>
-    </div>
   )
 }
