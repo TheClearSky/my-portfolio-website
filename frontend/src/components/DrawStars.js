@@ -1,11 +1,28 @@
 let resizecallback,animationframeID;
+let xoffset = 0;
+let yoffset = 0;
+let offsetupdated = false;
+
+export function setoffsetx(offset) {
+    if (xoffset === offset) {
+        return;
+    }
+    xoffset = offset;
+    offsetupdated = true;
+}
+
+export function setoffsety(offset) {
+    if (yoffset === offset) {
+        return;
+    }
+    yoffset = offset;
+    offsetupdated = true;
+}
 export function startDrawing(backgroundCanvas,{enableFlickering=true,updateAfterMilliseconds=200,starDensity=500,minStarOpacity = 0.0,maxStarOpacity = 0.7}={}) {
 
     let ctx = backgroundCanvas.getContext("2d");
     let prevwidth, prevheight;
-    let xoffset = 0;
-    let yoffset = 0;
-    let offsetupdated = false;
+
 
     function randomnum(min, max) {
         return min + (Math.random() * (max - min));
@@ -151,23 +168,6 @@ export function startDrawing(backgroundCanvas,{enableFlickering=true,updateAfter
             ctx.arc(mod(star.x + xoffset, backgroundCanvas.width), mod(star.y + yoffset, backgroundCanvas.height), star.r, 0, Math.PI * 2);
             ctx.fill();
         })
-    }
-
-
-    function setoffsetx(offset) {
-        if (xoffset === offset) {
-            return;
-        }
-        xoffset = offset;
-        offsetupdated = true;
-    }
-
-    function setoffsety(offset) {
-        if (yoffset === offset) {
-            return;
-        }
-        yoffset = offset;
-        offsetupdated = true;
     }
 
     initcanvas();
