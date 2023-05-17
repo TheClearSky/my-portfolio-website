@@ -208,6 +208,9 @@ async function setchesspiecesandtreeandmaterials(scene)
     whitepieces[4].name="whiteking";
     whitepieces[5].name="whiteknight";
 
+    //rotate white knights to face black
+    whitepieces[5].rotate(new Vector3(1,0,0),3.14);
+
     blackpieces[0].name="blackqueen";
     blackpieces[1].name="blackpawn";
     blackpieces[2].name="blackbishop";

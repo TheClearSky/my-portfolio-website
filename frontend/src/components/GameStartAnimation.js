@@ -7,6 +7,9 @@ import {clearcameraconstraints,setchesscameraconstraints } from './SceneManager.
 
 //Todo
 //Reset values when an animation ends in the else part, so it is reusable
+
+//Todo
+//Make the pieces pan in during the camerapan animation
 export class gameStartAnimations
 {
     constructor(trunk,canopy,instances,camera,chesspiecemanager,scene)
@@ -75,10 +78,15 @@ export class gameStartAnimations
 
                 this.setcameraforchessboardanimation();
                 this.scene.registerBeforeRender(this.boardrotationbound);
+                this.chesspiecemanager.updatechessboardlocation();
+                this.chesspiecemanager.putpiece(4,4,this.chesspiecemanager.piecetypes.king,true);
+                this.chesspiecemanager.putpiece(3,3,this.chesspiecemanager.piecetypes.king,false);
                 ++this.animationstage;
                 break;
             case 2:
                 this.scene.unregisterBeforeRender(this.boardrotationbound);
+                this.chesspiecemanager.updatechessboardlocation();
+                this.chesspiecemanager.setupdefaultboardbound();
                 this.scene.registerBeforeRender(this.camerapananimationbound);
                 ++this.animationstage;
                 break;
@@ -92,7 +100,7 @@ export class gameStartAnimations
                 setchesscameraconstraints(this.camera);
                 this.camera.attachControl(null);
                 this.chesspiecemanager.updatechessboardlocation();
-                // this.chesspiecemanager.putpiece(0,0,0,true);
+                
                 this.chesspiecemanager.startlistening(this.scene);
                 ++this.animationstage;
                 break;
@@ -177,8 +185,9 @@ export class gameStartAnimations
             this.instances.forEach(ins=>{
                 let {instance,distance}=ins;
                 instance.position.addInPlaceFromFloats(0,this.step*distance,0);
-                
             })
+            this.chesspiecemanager.updatesinglecelllocationwithpiecebound(3,3);
+            this.chesspiecemanager.updatesinglecelllocationwithpiecebound(4,4);
             this.camera.alpha+=this.step*Tools.ToRadians(360);
             //for black
             // camera.alpha-=step*Tools.ToRadians(360);

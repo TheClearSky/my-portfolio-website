@@ -1,8 +1,89 @@
 import { Vector3 } from "@babylonjs/core";
 import {PointerEventTypes} from '@babylonjs/core';
+import { Chess } from 'chess.js';
 
 export class ChessPieceManager
 {
+    convertnotation(fromtype,totype,value1,value2optional)
+    {
+        let locali,localj;
+        switch(fromtype)
+        {
+            case this.notationtypes.local:
+                locali=value1;
+                localj=value2optional;
+                break;
+            case this.notationtypes.chessjscoordinates:
+                locali=value2optional;
+                localj=8-value1-1;
+                break;
+            case this.notationtypes.chessjsfen:
+                let temp=this.convertnotationbound(this.notationtypes.chessjscoordinates,this.notationtypes.local,value1.charCodeAt(1)-"1".charCodeAt(0),value1.charCodeAt(0)-"a".charCodeAt(0));
+                locali=temp[0];
+                localj=temp[1];
+                break;
+        }
+        switch(totype)
+        {
+            case this.notationtypes.local:
+                return [locali,localj];
+                break;
+            case this.notationtypes.chessjscoordinates:
+                return [8-localj-1,locali];
+                break;
+            case this.notationtypes.chessjsfen:
+                let temp=this.convertnotationbound(this.notationtypes.local,this.notationtypes.chessjscoordinates,locali,localj);
+                return String.fromCharCode(temp[1]+"a".charCodeAt(0),temp[0]+"1".charCodeAt(0));
+                break;
+        }
+        
+
+    }
+    setfromboard(board)
+    {
+        for(let i=0;i<8;++i)
+        {
+            for(let j=0;j<8;++j)
+            {
+                let [locali,localj]=this.convertnotationbound(this.notationtypes.chessjscoordinates,this.notationtypes.local,i,j);
+                if(board[i][j]!=null)
+                {
+                    let {type,color}=board[i][j];
+                    
+                    switch(type)
+                    {
+                        case 'p':
+                            this.putpiecebound(locali,localj,this.piecetypes.pawn,(color=='w'));
+                            break;
+                        case 'r':
+                            this.putpiecebound(locali,localj,this.piecetypes.rook,(color=='w'));
+                            break;
+                        case 'n':
+                            this.putpiecebound(locali,localj,this.piecetypes.knight,(color=='w'));
+                            break;
+                        case 'b':
+                            this.putpiecebound(locali,localj,this.piecetypes.bishop,(color=='w'));
+                            break;
+                        case 'q':
+                            this.putpiecebound(locali,localj,this.piecetypes.queen,(color=='w'));
+                            break;
+                        case 'k':
+                            this.putpiecebound(locali,localj,this.piecetypes.king,(color=='w'));
+                            break;
+                    }
+                }
+                else
+                {
+                    this.removepiecebound(locali,localj);
+                }
+            }
+        }
+    }
+    setupdefaultboard()
+    {
+        this.chessgame=new Chess();
+        this.setfromboardbound(this.chessgame.board());
+    }
     constructor(originalwhitepieces,originalblackpieces,chessboardinstances,piecetypes,scene)
     {
 
@@ -35,7 +116,17 @@ export class ChessPieceManager
             this.cells.push(nextrow);
         }
 
+        this.notationtypes={
+            local:0,
+            chessjscoordinates:1,
+            chessjsfen:2
+        }
+
+        this.convertnotationbound=this.convertnotation.bind(this);
+        this.setfromboardbound=this.setfromboard.bind(this);
+        this.setupdefaultboardbound=this.setupdefaultboard.bind(this);
         this.updatechessboardlocationbound=this.updatechessboardlocation.bind(this);
+        this.updatesinglecelllocationwithpiecebound=this.updatesinglecelllocationwithpiece.bind(this);
         this.piecefallanimationanddisposebound=this.piecefallanimationanddispose.bind(this);
         this.removepiecebound=this.removepiece.bind(this);
         this.putpiecebound=this.putpiece.bind(this);
@@ -56,6 +147,22 @@ export class ChessPieceManager
                 this.cells[i][j].location.y=currlocation.y+0.1;
                 this.cells[i][j].location.z=currlocation.z;
             }
+        }
+    }
+    updatesinglecelllocationwithpiece(i,j)
+    {
+        let currlocation=this.chessboardinstances[i*8+j].instance.position;
+                
+        this.cells[i][j].location.x=currlocation.x;
+        this.cells[i][j].location.y=currlocation.y+0.1;
+        this.cells[i][j].location.z=currlocation.z;
+
+        let piece=this.cells[i][j].piece;
+        if(piece!=null)
+        {
+            piece.position.x=this.cells[i][j].location.x;
+            piece.position.y=this.cells[i][j].location.y;
+            piece.position.z=this.cells[i][j].location.z;
         }
     }
     piecefallanimationanddispose(piece,localvar,functiontounregister)
