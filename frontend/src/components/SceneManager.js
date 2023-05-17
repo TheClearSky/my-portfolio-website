@@ -142,13 +142,11 @@ function setbackgroundmovement(scene,camera)
 }
 async function setchesspiecesandtreeandmaterials(scene)
 {
-    let [whitemat,blackmat,treemodels,chessmodels,whitepiecesmat,blackpiecesmat]=await Promise.all([
-        NodeMaterial.ParseFromSnippetAsync("P3J9PT#14", scene),
-        NodeMaterial.ParseFromSnippetAsync("ESKVBI#1", scene),
+    let [blackmat,treemodels,chessmodels,blackpiecesmat]=await Promise.all([
+        NodeMaterial.ParseFromSnippetAsync("ESKVBI#7", scene),
         SceneLoader.ImportMeshAsync("", "src/assets/modelnew/", "treeandtrunklowquality.glb", scene),
         SceneLoader.ImportMeshAsync("", "src/assets/modelnew/", "chesspieces.glb", scene),
-        NodeMaterial.ParseFromSnippetAsync("396KDF#7", scene),
-        NodeMaterial.ParseFromSnippetAsync("396KDF#8", scene)
+        NodeMaterial.ParseFromSnippetAsync("396KDF#9", scene),
     ])
     
 
@@ -162,6 +160,22 @@ async function setchesspiecesandtreeandmaterials(scene)
     5->king
     6->knight
     */
+    let whitepiecesmat=blackpiecesmat.clone();
+    //clone black piece material
+    whitepiecesmat.getBlockByName("IsWhite").value=1;
+    //set white flag to true to make it white piece material
+
+    let whitemat=blackmat.clone();
+    //clone black material
+    whitemat.getBlockByName("isWhite").value=1;
+    //set white flag to true to make it white material
+
+    let blackselectedmat=blackmat.clone();
+    let whiteselectedmat=whitemat.clone();
+    //clone black and white mats
+    blackselectedmat.getBlockByName("isSelected").value=1;
+    whiteselectedmat.getBlockByName("isSelected").value=1;
+    //turn on selected flags to make it selected materials
 
     let glowMaskwhite = whitepiecesmat.getBlockByName("glowMask");
     let glowMaskblack = blackpiecesmat.getBlockByName("glowMask");
@@ -217,7 +231,7 @@ async function setchesspiecesandtreeandmaterials(scene)
     blackpieces[3].name="blackrook";
     blackpieces[4].name="blackking";
     blackpieces[5].name="blackknight";
-    return {whitepieces,blackpieces,piecetypes,trunk,canopy,whitemat,blackmat};
+    return {whitepieces,blackpieces,piecetypes,trunk,canopy,whitemat,blackmat,whiteselectedmat,blackselectedmat};
 }
 
 function setinitialtransformsoftree(canopy,trunk)
@@ -233,16 +247,23 @@ function makechesspiecesinvisible(whitepieces,blackpieces)
     blackpieces.forEach(mesh=>mesh.isVisible=false);
 }
 
-function makechessboard(whitemat,blackmat,scene)
+function makechessboard(whitemat,blackmat,whiteselectedmat,blackselectedmat,scene)
 {
     let blackbox = MeshBuilder.CreateBox("blackbox", {width:1,depth:1,height:0.2}, scene);
     let whitebox = MeshBuilder.CreateBox("whitebox", {width:1,depth:1,height:0.2}, scene);
+    let blackselectedbox = MeshBuilder.CreateBox("blackselectedbox", {width:1,depth:1,height:0.2}, scene);
+    let whiteselectedbox = MeshBuilder.CreateBox("whiteselectedbox", {width:1,depth:1,height:0.2}, scene);
 
     whitebox.material=whitemat;
     blackbox.material=blackmat;
+    whiteselectedbox.material=whiteselectedmat;
+    blackselectedbox.material=blackselectedmat;
 
     whitebox.isVisible=false;
     blackbox.isVisible=false;
+    whiteselectedbox.isVisible=false;
+    blackselectedbox.isVisible=false;
+
     let instances=[];
     for(let i=-3.5;i<4;++i)
     {
@@ -269,7 +290,7 @@ function makechessboard(whitemat,blackmat,scene)
             instances.push({i,j,instance,distance});
         }
     }
-    return instances;
+    return {instances,whitebox,blackbox,whiteselectedbox,blackselectedbox};
 }
 
 function setinitialtransformsofchessboard(instances)
@@ -292,18 +313,18 @@ export async function onSceneReady(scene) {
     let {light,light2,camera}=setscene(scene);
     setbackgroundmovement(scene,camera);
     
-    let {whitepieces,blackpieces,piecetypes,trunk,canopy,whitemat,blackmat}=await setchesspiecesandtreeandmaterials(scene);
+    let {whitepieces,blackpieces,piecetypes,trunk,canopy,whitemat,blackmat,whiteselectedmat,blackselectedmat}=await setchesspiecesandtreeandmaterials(scene);
 
 
     setinitialtransformsoftree(canopy,trunk);
     makechesspiecesinvisible(whitepieces,blackpieces);
 
-    let instances=makechessboard(whitemat,blackmat,scene);
+    let {instances,whitebox,blackbox,whiteselectedbox,blackselectedbox}=makechessboard(whitemat,blackmat,whiteselectedmat,blackselectedmat,scene);
 
     setinitialtransformsofchessboard(instances);
 
     
-    let chess=new ChessPieceManager(whitepieces,blackpieces,instances,piecetypes,scene);
+    let chess=new ChessPieceManager(whitepieces,blackpieces,instances,piecetypes,whitebox,blackbox,whiteselectedbox,blackselectedbox,scene);
     
     
     let anim=new gameStartAnimations(trunk,canopy,instances,camera,chess,scene);
