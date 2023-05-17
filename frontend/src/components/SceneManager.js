@@ -144,8 +144,8 @@ async function setchesspiecesandtreeandmaterials(scene)
 {
     let [blackmat,treemodels,chessmodels,blackpiecesmat]=await Promise.all([
         NodeMaterial.ParseFromSnippetAsync("ESKVBI#7", scene),
-        SceneLoader.ImportMeshAsync("", "src/assets/modelnew/", "treeandtrunklowquality.glb", scene),
-        SceneLoader.ImportMeshAsync("", "src/assets/modelnew/", "chesspieces.glb", scene),
+        SceneLoader.ImportMeshAsync("", "./modelnew/", "treeandtrunklowquality.glb", scene),
+        SceneLoader.ImportMeshAsync("", "./modelnew/", "chesspieces.glb", scene),
         NodeMaterial.ParseFromSnippetAsync("396KDF#9", scene),
     ])
     
