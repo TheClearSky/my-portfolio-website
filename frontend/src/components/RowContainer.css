@@ -2,10 +2,16 @@
     display: flex;
     margin-inline: auto;
     align-items: center;
+    gap:min(3em,5vmin);
+    width: 100%;
+    max-width: 1200px;
+    padding-inline: min(4em,5vw);
+    padding-block: min(2em,5vh);
 }
 
 @media screen and (max-width: 800px) {
     .rowcontainer{
         flex-direction: column;
+        padding-inline: 0;
     }
 }
