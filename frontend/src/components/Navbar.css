@@ -102,6 +102,7 @@
     font-family: Mufanpfs;
     font-size: 2rem;
     padding-inline: 0.7em;
+    text-decoration: none;
 }
 
 .navbutton:hover,.navbutton:focus,.activenavbutton,.logo:hover,.logo:focus{
@@ -119,7 +120,7 @@
     transform: rotateZ(40deg);
 }
 
-.activenavbutton {
+.navbutton.active {
     color: #82C5F1;
     text-decoration: underline;
     text-decoration-color: white;
