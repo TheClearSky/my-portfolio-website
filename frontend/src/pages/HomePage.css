@@ -1,6 +1,6 @@
 .canvastipandcanvas{
     font-family: Mufanpfs;
-    font-size: 1.2rem;
+    font-size: 1rem;
     color: rgb(187, 187, 187);
     
     display: flex;
@@ -10,12 +10,13 @@
 .tooltipclosebutton
 {
     font-family: Mufanpfs;
-    font-size: 1rem;
+    font-size: 0.8rem;
     margin-inline: 0.5em;
-    padding-inline: 0.2em;
-    background-color: rgb(28, 52, 73);
+    padding-inline: 0.4em;
+    background-color: transparent;
     color: rgb(187, 187, 187);
     border-width: 0em;
+    border: 2px solid rgb(187, 187, 187);
 }
 .tooltipclosebutton:hover,.tooltipclosebutton:focus{  
     text-shadow: rgb(255, 255, 255) 0px 0 0.4em;

@@ -14,12 +14,12 @@ export default function HomePage() {
                     { rotateTooltip &&
                     <div>
                         Try Rotating the Tree below!!
-                        <button onClick={()=>setRotateTooltip(false)} className="tooltipclosebutton">Close</button>
+                        <button onClick={()=>setRotateTooltip(false)} className="tooltipclosebutton">X</button>
                     </div>}
                     { chessTooltip &&
                     <div>
                         Click on the chessboard for a surprise!!
-                        <button onClick={()=>setChessTooltip(false)} className="tooltipclosebutton">Close</button>
+                        <button onClick={()=>setChessTooltip(false)} className="tooltipclosebutton">X</button>
                     </div>}
                     <Canvas3D />
                 </div>
