@@ -1,0 +1,8 @@
+.projectslist{
+    margin-inline: auto;
+    gap:min(3em,5vmin);
+    width: 80%;
+    max-width: 800px;
+    padding-inline: min(4em,5vw);
+    padding-block: min(2em,5vh);
+}

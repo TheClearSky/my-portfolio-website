@@ -17,13 +17,13 @@ export default function Navbar() {
                     <span className="bar bar3"></span>
                     <span className="bar bar4"></span>
                 </div>
-                <ul className="navbuttons">
-                    <NavLink  className="navbutton" to="/">Home</NavLink>
-                    <NavLink  className="navbutton" to="/projects" >Projects</NavLink>
-                    <NavLink  className="navbutton" to="/skills" >Skills</NavLink>
-                    <NavLink  className="navbutton" to="/contact" >Contact</NavLink>
-                    <NavLink  className="navbutton" to="/theme" >Theme</NavLink>
-                </ul>
+                <div className="navbuttons">
+                    <NavLink  className="navbutton" onClick={()=>setOpenedMenu(false)} to="/">Home</NavLink>
+                    <NavLink  className="navbutton" onClick={()=>setOpenedMenu(false)} to="/projects" >Projects</NavLink>
+                    <NavLink  className="navbutton" onClick={()=>setOpenedMenu(false)} to="/skills" >Skills</NavLink>
+                    <NavLink  className="navbutton" onClick={()=>setOpenedMenu(false)} to="/contact" >Contact</NavLink>
+                    <NavLink  className="navbutton" onClick={()=>setOpenedMenu(false)} to="/theme" >Theme</NavLink>
+                </div>
 
             </nav>
             <Outlet />
