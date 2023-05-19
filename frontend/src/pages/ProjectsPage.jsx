@@ -43,7 +43,7 @@ export default function ProjectsPage() {
             linktoproject={"https://jeevanrakshak.web.app/"}
 
         >
-            Made the website frontend on this project in the House of Hackers Hackathon 2023, placed 4th out of 60+ participating teams.
+            Made the website frontend and Figma design on this project in the House of Hackers Hackathon 2023, placed 4th out of 60+ participating teams.
         </ProjectSection>
     </div>
   )
