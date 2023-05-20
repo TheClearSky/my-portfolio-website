@@ -1,0 +1,21 @@
+.skillcategorytitle{
+    font-family: Mufanpfs;
+    color: #ffffffc4;
+    font-size: 2rem;
+    width: fit-content;
+    margin-inline: auto;
+    
+    margin-bottom: 0.3em;
+    letter-spacing: 0.08em;
+    text-shadow: rgb(176, 203, 255) 0px 0 0.3em;
+}
+.skillcategory{
+    margin-inline: auto;
+    column-gap:0.5em;
+    row-gap:2em;
+    width: 80%;
+    max-width: 650px;
+    margin-bottom: 5em;
+    display: flex;
+    flex-wrap: wrap;
+}

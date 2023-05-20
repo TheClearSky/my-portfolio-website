@@ -61,6 +61,7 @@
     margin-bottom: 0.5em;
     letter-spacing: 0.08em;
     text-decoration: underline;
+    text-shadow: rgb(176, 203, 255) 0px 0 0.3em;
 }
 .projectsectiontextandimage > h3{
     color: #ffffffc4;
@@ -68,6 +69,7 @@
     transition-delay: 0.5s;
     letter-spacing: 0.06em;
     line-height: 1em;
+    text-shadow: rgb(176, 203, 255) 0px 0 0.1em;
 }
 .projectsectiontextandimage > div{
     font-size: 1.3rem;

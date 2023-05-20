@@ -16,7 +16,7 @@ export default function ProjectSection({title:p_title,newCategoryTitle:p_newCate
         observer.observe(sectionRef.current);
 
         return ()=>observer.disconnect();
-    },[sectionRef])
+    },[sectionRef.current])
 
     let iconpaths={
         html:'./icons/htmlicon.svg',

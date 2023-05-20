@@ -1,0 +1,18 @@
+.skillsection{
+    width:100%;
+    max-width: 15em;
+    margin-inline: auto;
+}
+.skillsectionname{
+    font-family: Mufanpfs;
+    color: #ffffffc4;
+    font-size: 1.4rem;
+    letter-spacing: 0.06em;
+    text-shadow: rgb(142, 154, 178) 0px 0 0.13em;
+}
+.skillsectionbar{
+    height: 5px;
+    background: linear-gradient(90deg, #1F1754 0%, #e9ebef 100%);
+    border-radius: 8px;
+    transition: 1s;
+}
