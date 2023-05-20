@@ -22,7 +22,7 @@ export default function Navbar() {
                     <NavLink  className="navbutton" onClick={()=>setOpenedMenu(false)} to="/projects" >Projects</NavLink>
                     <NavLink  className="navbutton" onClick={()=>setOpenedMenu(false)} to="/skills" >Skills</NavLink>
                     <NavLink  className="navbutton" onClick={()=>setOpenedMenu(false)} to="/contact" >Contact</NavLink>
-                    <NavLink  className="navbutton" onClick={()=>setOpenedMenu(false)} to="/" >Theme(Coming soon)</NavLink>
+                    {/* <NavLink  className="navbutton" onClick={()=>setOpenedMenu(false)} to="/theme" >Theme</NavLink> */}
                 </div>
 
             </nav>
