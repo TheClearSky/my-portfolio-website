@@ -1,8 +1,19 @@
 {
-  "name": "frontend",
+  "name": "my-portfolio-website-frontend",
   "private": true,
   "version": "0.0.0",
+  "description": "frontend for my portfolio website",
   "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TheClearSky/my-portfolio-website.git"
+  },
+  "author": "Deepak Prasad",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/TheClearSky/my-portfolio-website/issues"
+  },
+  "homepage": "https://github.com/TheClearSky/my-portfolio-website#readme",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
