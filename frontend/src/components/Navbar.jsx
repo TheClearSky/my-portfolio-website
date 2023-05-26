@@ -24,6 +24,7 @@ export default function Navbar() {
                     <NavLink  className="navbutton" onClick={()=>setOpenedMenu(false)} to="/contact" >Contact</NavLink>
                     {/* <NavLink  className="navbutton" onClick={()=>setOpenedMenu(false)} to="/theme" >Theme</NavLink> */}
                 </div>
+                <div className="prof"></div>
 
             </nav>
             <Outlet />
