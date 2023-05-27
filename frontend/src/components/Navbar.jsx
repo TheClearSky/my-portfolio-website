@@ -24,7 +24,7 @@ export default function Navbar() {
                     <NavLink  className="navbutton" onClick={()=>setOpenedMenu(false)} to="/contact" >Contact</NavLink>
                     {/* <NavLink  className="navbutton" onClick={()=>setOpenedMenu(false)} to="/theme" >Theme</NavLink> */}
                 </div>
-                <div className="prof"></div>
+                <img src="./icons/profileicon.svg" className="profile"></img>
 
             </nav>
             <Outlet />

@@ -70,7 +70,9 @@
 .navbar {
     width: 100%;
     font-size: 2.5rem;
-    padding: 0.6em 2em;
+    padding-block: 0.6em;
+    padding-inline: min( 2em , 8vw );
+    
 }
 
 .navbuttons,
@@ -78,6 +80,7 @@
     display: flex;
     flex-direction: row;
     z-index: 2;
+    align-items: center;
 }
 .navbuttons{
     justify-content: space-between;
@@ -162,15 +165,15 @@
     backdrop-filter: blur(10px);
 }
 
-.prof{
+.profile{
     width: 50px;
     height: 50px;
-    background-color: red;
     margin-left: 20px;
-}
-
-.openedmenu .prof{
+    
     z-index: 2;
+}
+.openedmenu .profile{
+    filter: invert(1);
 }
 
 
