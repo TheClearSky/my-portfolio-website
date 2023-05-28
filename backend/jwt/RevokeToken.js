@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 import RevokedToken from "../database/models/RevokedToken.js";
 
 const revokeToken = async (req, res) => {
-    let token = req.cookies.jwt;
+    let token = req.headers?.authorization?.split(' ')[1];
     if (token) {
         try {
             const decoded = jwt.verify(token, process.env.JWT_SECRET);
@@ -12,11 +12,6 @@ const revokeToken = async (req, res) => {
 
         }
     }
-
-    res.cookie('jwt', '', {
-        httpOnly: true,
-        expires: new Date(0),
-    });
 };
 
 export default revokeToken;

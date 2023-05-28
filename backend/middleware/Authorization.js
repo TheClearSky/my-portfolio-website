@@ -4,7 +4,7 @@ import RevokedToken from '../database/models/RevokedToken.js';
 import User from '../database/models/User.js';
 
 const authorizetoken = asyncHandler(async (req, res, next) => {
-  let token = req.cookies.jwt;
+  let token = req.headers?.authorization?.split(' ')[1];
   if (token) {
     try {
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
