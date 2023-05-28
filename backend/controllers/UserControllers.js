@@ -48,7 +48,7 @@ const loginUser = asyncHandler(async (req, res) => {
         throw new Error("Guest Users can't be logged into. Please Register");
     }
     if (user && (await user.matchPassword(password))) {
-        let token=generateToken(res, user._id);
+        let token=generateToken(user._id);
 
         res.json({
             _id: user._id,
@@ -107,7 +107,7 @@ const registerUser = asyncHandler(async (req, res) => {
     if (user) {
         //revoke previous jwt if it exists
         await revokeToken(req,res);
-        let token=generateToken(res, user._id);
+        let token=generateToken(user._id);
 
         res.status(201).json({
             _id: user._id,
@@ -168,7 +168,7 @@ const updateUserProfile = asyncHandler(async (req, res) => {
         if(recalculateToken)
         {
             await revokeToken(req,res);
-            token=generateToken(res,updatedUser._id);
+            token=generateToken(updatedUser._id);
         }
         res.json({
             _id: updatedUser._id,
