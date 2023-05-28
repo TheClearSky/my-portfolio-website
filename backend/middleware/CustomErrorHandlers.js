@@ -14,7 +14,7 @@ const errorHandler = (err, req, res, next) => {
         message = 'Resource not found';
     }
 
-    if(process.env.NODE_ENV === 'DEV')
+    if(process.env.CURRENT_ENVIRONMENT === 'DEV')
     {
         res.status(statusCode).json({
             message: message,
