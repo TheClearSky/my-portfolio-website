@@ -2,14 +2,14 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import { notFound, errorHandler } from "./middleware/CustomErrorHandlers.js";
-import connectToDB from "./database/connectToDB.js";
+import connectToDB from "./database/ConnectToDB.js";
 import cookieParser from 'cookie-parser';
 import userRoutes from "./routes/UserRoutes.js";
 import { authorizetoken } from "./middleware/Authorization.js";
 import { Server } from "socket.io";
 import { handleChessConnection } from "./routes/ChessRoutes.js";
 dotenv.config();
-connectToDB();
+ConnectToDB();
 const port=process.env.PORT || 3000;
 
 const app=express();
