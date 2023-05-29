@@ -1,0 +1,16 @@
+.profilebutton{
+    background-color: transparent;
+    border: 0px;
+    font-family: Mufanpfs;
+    font-size: 1.2rem;
+    padding-inline: 0.6em;
+}
+.profilebutton:hover{
+    text-shadow: rgb(0, 0, 0) 0px 5px 0.4em;
+    cursor: pointer;
+}
+.activeprofilebutton{
+    border-width: 5px 5px 0px 5px;
+    border-color: rgba(0, 0, 0, 0.153);
+    border-style: solid;
+}

@@ -1,0 +1,38 @@
+.profilemenu{
+    background: rgb(179, 196, 195);
+    border: 6px solid rgb(0, 0, 0);
+    
+    position: absolute;
+    top:50px;
+    right:0px;
+
+    color: rgba(4, 20, 31, 0.873);
+    font-family: Mufanpfs;
+    font-size: 1.5rem;
+    padding: 0.8em;
+    text-align: center;
+    white-space: nowrap;
+}
+.openedmenu .profilemenu{
+    filter: invert(1);
+}
+.profilename{
+    color: rgb(4, 20, 31);
+    text-shadow: rgb(36, 11, 115) 0px 5px 0.6em;
+    margin-bottom: 0.5em;
+}
+.profileguest{
+    font-size: 1.2rem;
+    line-height: 0.6;
+    margin-top: 0.5em;
+    color: rgba(0, 0, 0, 0.742);
+    white-space: pre-wrap;
+}
+.profilebuttons{
+    display: flex;
+    justify-content: space-between;
+    margin-top: 0.5em;
+    width: fit-content;
+    margin-inline: auto;
+}
+
