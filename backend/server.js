@@ -23,23 +23,15 @@ else
 {
     frontendurl=process.env.FRONTEND_URL_DEV;
 }
-// app.use(cors({
-//     origin:[frontendurl],
-// }));
-app.use(function(req, res, next) {
-    // res.header("Access-Control-Allow-Origin", "*");
-    const allowedOrigins = [frontendurl];
-    // const origin = req.headers.origin;
-    // if (allowedOrigins.includes(origin)) {
-    //      res.setHeader('Access-Control-Allow-Origin', origin);
-    // }
-    console.log(req.headers.origin,allowedOrigins);
-    res.setHeader('Access-Control-Allow-Origin', allowedOrigins);
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
-    res.header("Access-Control-Allow-credentials", true);
-    res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, UPDATE");
-    next();
-  });
+
+console.log(frontendurl);
+app.use(cors({
+    origin:[frontendurl],
+    methods:"GET, POST, PUT, DELETE, UPDATE",
+    allowedHeaders:"Origin, X-Requested-With, Content-Type, Accept, Authorization",
+    credentials:true,
+}));
+
 
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
