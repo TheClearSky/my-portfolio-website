@@ -26,6 +26,7 @@ else
 app.use(cors({
     origin:[frontendurl],
 }));
+console.log(frontendurl);
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
 app.use(cookieParser());
