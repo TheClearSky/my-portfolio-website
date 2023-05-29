@@ -3,13 +3,29 @@
     color: white;
     text-align: center;
     padding: 2em 2em;
-    min-width: 32%;
-    max-width: 100%;
+    font-size: 1rem;
+}
+.card.minimized{
+    padding: 0.5em;
 }
 .card .title{
     font-size: 2.3rem;
     padding-bottom: 0.5em;
     text-shadow: rgb(176, 203, 255) 0px 0 0.2em;
+}
+.minimizebutton{
+    position: absolute;
+    right:10px;
+    top:10px;
+    border: 2px solid white;
+    padding-inline: 0.5em;
+    padding-bottom: 0em !important;
+    font-size: 0.5rem !important;
+}
+.maximizename{
+    padding-top: 1em;
+    font-size: 1rem !important;
+    padding-bottom: 0px !important;
 }
 .card .content{
     font-size: 1.6rem;
