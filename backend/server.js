@@ -2,7 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import { notFound, errorHandler } from "./middleware/CustomErrorHandlers.js";
-import connectToDB from "./database/ConnectToDB.js";
+import ConnectToDB from "./database/ConnectToDB.js";
 import cookieParser from 'cookie-parser';
 import userRoutes from "./routes/UserRoutes.js";
 import { authorizetoken } from "./middleware/Authorization.js";
