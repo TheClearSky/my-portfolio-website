@@ -11,7 +11,7 @@ export default function NameCard({textDelayInSeconds:p_textDelayInSeconds=5}) {
         <div key={text} style={{animationDelay:`-${(index+1)*p_textDelayInSeconds}s`}}>{text}</div>
         )
 
-    const [minimized,setMinimized]=useState(true);
+    const [minimized,setMinimized]=useState(false);
     function toggleminimized()
     {
         setMinimized((prevMinimized)=>!prevMinimized);
