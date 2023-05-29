@@ -1,7 +1,9 @@
 .profilemenu{
-    background: rgb(179, 196, 195);
     border: 6px solid rgb(0, 0, 0);
-    
+    background-image: radial-gradient(#838fc4 2px, transparent 2px), radial-gradient(#838fc4 2px, transparent 2px);
+    background-size: 57px 57px;
+    background-position: 0 0, 28.5px 28.5px;
+    background-color: #b3c4c3;
     position: absolute;
     top:50px;
     right:0px;
