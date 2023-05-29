@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import "./NameCard.css";
+import Glasscard from './Glasscard';
 
 export default function NameCard({textDelayInSeconds:p_textDelayInSeconds=5}) {
 
@@ -17,7 +18,7 @@ export default function NameCard({textDelayInSeconds:p_textDelayInSeconds=5}) {
         setMinimized((prevMinimized)=>!prevMinimized);
     }
   return (
-    <div className={"glasscard card"+((minimized)?" minimized":"")}>
+    <Glasscard className={"card"+((minimized)?" minimized":"")}>
         {(minimized)?
         <>
             <div onClick={toggleminimized} className="minimizebutton title">+</div>
@@ -34,6 +35,6 @@ export default function NameCard({textDelayInSeconds:p_textDelayInSeconds=5}) {
                 {animatedtexts}
             </div>
         </>}
-    </div>
+    </Glasscard>
   )
 }
