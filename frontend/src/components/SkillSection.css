@@ -10,9 +10,13 @@
     letter-spacing: 0.06em;
     text-shadow: rgb(142, 154, 178) 0px 0 0.13em;
 }
+.skillsectionbarbackground{
+    background-color: rgba(255, 255, 255, 0.095);
+    border: 2px solid rgba(255, 255, 255, 0.214);
+}
 .skillsectionbar{
-    height: 5px;
-    background: linear-gradient(90deg, #4e42a6 0%, #3899c9 100%);
-    border-radius: 8px;
+    height: 7px;
+    background-image: repeating-linear-gradient(45deg, transparent, transparent 24px, #4e42a6 24px, #4e42a6 48px);
+    background-color: #3899c9;
     transition: 1s;
 }

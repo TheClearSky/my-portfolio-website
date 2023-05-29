@@ -15,14 +15,16 @@ export default function SkillSection({ name: p_name, percentage: p_percentage, a
         <>
             <div className='skillsection'>
                 <div className='skillsectionname'>{p_name}</div>
-                <div className='skillsectionbar' 
-                    style=
-                        {{ 
-                            transitionDelay: p_animationdelay,
-                            width: barprogress
-                        }}
-                    ref={barRef}
-                />
+                <div className="skillsectionbarbackground">
+                    <div className='skillsectionbar' 
+                        style=
+                            {{ 
+                                transitionDelay: p_animationdelay,
+                                width: barprogress
+                            }}
+                        ref={barRef}
+                    />
+                </div>
             </div>
         </>
     )
