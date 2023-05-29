@@ -28,16 +28,13 @@ export default function Canvas3D() {
             scene.getEngine().resize();
         };
 
-        if (window) {
-            window.addEventListener("resize", resize);
-        }
+        const resizeObserver= new ResizeObserver(resize);
+        resizeObserver.observe(canvas);
 
         return () => {
             scene.getEngine().dispose();
 
-            if (window) {
-                window.removeEventListener("resize", resize);
-            }
+            resizeObserver.disconnect();
         };
     }, []);
 
