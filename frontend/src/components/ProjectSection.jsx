@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import './ProjectSection.css';
+import iconpaths from "./IconConfig.js";
 
 export default function ProjectSection({title:p_title,newCategoryTitle:p_newCategoryTitle,dontRenderBar:p_dontRenderBar,imagesrclist:p_imagesrclist,iconnamelist:p_iconnamelist,githublink:p_githublink,linktoproject:p_linktoproject,children:p_children}) {
     let [appeared,setAppeared]=useState(false);
@@ -18,21 +19,7 @@ export default function ProjectSection({title:p_title,newCategoryTitle:p_newCate
         return ()=>observer.disconnect();
     },[sectionRef.current])
 
-    let iconpaths={
-        html:'/icons/htmlicon.svg',
-        css:'/icons/cssicon.svg',
-        javascript:'/icons/javascripticon.svg',
-        react:'/icons/reacticon.svg',
-        reactrouter:'/icons/reactroutericon.svg',
-        vite:'/icons/viteicon.svg',
-        konva:'/icons/konvaicon.webp',
-        babylonjs:'/icons/babylonjsicon.svg',
-        firebase:'/icons/firebaseicon.svg',
-        netlify:'/icons/netlifyicon.svg',
-        github:'/icons/githubicon.svg',
-        githubblack:'/icons/githubblackicon.svg',
-        link:"/icons/linkicon.svg"
-    }
+
   return (
     <div>
         <div className={"barandtextsplit"+(appeared?" appeared":"")} ref={sectionRef}>
