@@ -24,7 +24,6 @@ else
     frontendurl=process.env.FRONTEND_URL_DEV;
 }
 
-console.log(frontendurl);
 app.use(cors({
     origin:[frontendurl],
     methods:"GET, POST, PUT, DELETE, UPDATE",

@@ -36,8 +36,8 @@ const userSchema = mongoose.Schema(
         name: {
             type: String,
             required: true,
-            minLength:5,
-            maxLength:50
+            minLength:[4,"Name must be atleast 4 characeters"],
+            maxLength:[50,"Name must be less than 50 characters"]
         },
         email: {
             type: String,
@@ -51,8 +51,8 @@ const userSchema = mongoose.Schema(
             type: String,
             required: true,
             trim:true,
-            minLength:8,
-            maxLength:100
+            minLength:[8,"Password must be atleast 8 characters"],
+            maxLength:[100,"Password shouldn't exeed 100 characters"]
         },
         guest:{
             type:Boolean,
