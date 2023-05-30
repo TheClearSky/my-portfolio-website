@@ -3,7 +3,7 @@ import "./ProfileSubMenu.css";
 import { useState } from 'react';
 import { useLoginMutation, useRegisterMutation, useUpdateProfileMutation } from "../apiSlices/userApiSlice";
 
-export default function ProfileSubMenu({activeButton:p_activeButton}) {
+export default function ProfileSubMenu({activeButton:p_activeButton,setActiveButton:p_setActiveButton,errorMessage:p_errorMessage,setErrorMessage:p_setErrorMessage}) {
     const [submenuValues, setSubmenuValues] = useState({ name: "", email: "",password: "" });
 
     const handleInputChange = (event) => {
@@ -13,20 +13,21 @@ export default function ProfileSubMenu({activeButton:p_activeButton}) {
     const [loginsubmit, loginresult] = useLoginMutation();
     const [registersubmit,registerresult] = useRegisterMutation();
     const [updateprofilesubmit,updateprofileresult] = useUpdateProfileMutation();
-
-    function handleSubmenuSubmit()
+    async function handleSubmenuSubmit()
     {
+        let data={},submithandler;
         if(p_activeButton=="Log In")
         {
-            loginsubmit({email:submenuValues.email,password:submenuValues.password});
+            data={email:submenuValues.email,password:submenuValues.password};
+            submithandler=loginsubmit;
         }
         else if(p_activeButton=="Register")
         {
-            registersubmit({name:submenuValues.name,email:submenuValues.email,password:submenuValues.password});
+            data={name:submenuValues.name,email:submenuValues.email,password:submenuValues.password};
+            submithandler=registersubmit;
         }
         else if(p_activeButton=="Update Profile")
         {
-            let data={};
             if(submenuValues.name!=="")
             {
                 data.name=submenuValues.name;
@@ -39,7 +40,21 @@ export default function ProfileSubMenu({activeButton:p_activeButton}) {
             {
                 data.password=submenuValues.password;
             }
-            updateprofilesubmit(data);
+            submithandler=updateprofilesubmit;
+        }
+        try
+        {
+            const payload= await submithandler(data);
+            if(payload.error)
+            {
+                throw new Error(payload.error.data.message);
+            }
+            p_setErrorMessage("");
+            p_setActiveButton(null);
+        }
+        catch(error)
+        {
+            p_setErrorMessage(error.message);
         }
     }
     return (
@@ -63,6 +78,10 @@ export default function ProfileSubMenu({activeButton:p_activeButton}) {
                 Password:
                 <input className="profilesubmenuinput" name="password" type="password" value={submenuValues.password} onChange={handleInputChange} />
             </label>
+            {(p_errorMessage!=="")&&
+            <div className="profilesubmenusubmissionerror">
+                Error:{p_errorMessage}
+            </div>}
             <button onClick={handleSubmenuSubmit} className="profilesubmenusubmit" >Submit</button>
         </div>
     )

@@ -25,3 +25,14 @@
     background-color: rgba(0, 0, 0, 0.132);
     cursor: pointer;
 }
+.profilesubmenusubmissionerror{
+    color: rgb(81, 22, 22);
+    background-color: rgba(255, 0, 0, 0.16);
+    border: 2px dashed rgba(255, 0, 0, 0.345);
+    font-size: 1rem;
+    white-space: pre-wrap;
+    width: fit-content;
+    margin-inline: auto;
+    margin-block: 0.5em;
+    padding-inline: 0.5em;
+}

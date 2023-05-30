@@ -15,8 +15,11 @@ export default function ProfileMenu({ isLoading: p_isLoading,isError:p_isError, 
     }
 
     let [activeButton, setActiveButton] = useState(null);
+    
+    const [errorMessage,setErrorMessage]=useState("");
     function togglemenu(menuname) {
         return function () {
+            setErrorMessage("");
             setActiveButton((prevActiveMenu) => {
                 if (prevActiveMenu === menuname) {
                     return null;
@@ -32,6 +35,11 @@ export default function ProfileMenu({ isLoading: p_isLoading,isError:p_isError, 
     }
     
     const [logoutsubmit,logoutresult] = useLogoutMutation();
+    async function handleLogOut()
+    {
+        await logoutsubmit();
+        setActiveButton(null);
+    }
     
     return (
         <div onClick={preventOnclickOfParent} className="profilemenu">
@@ -53,13 +61,13 @@ export default function ProfileMenu({ isLoading: p_isLoading,isError:p_isError, 
                         </>
                         :
                         <>
-                            <TabButton name={"Log Out"} onclick={()=>logoutsubmit()} />
+                            <TabButton name={"Log Out"} onclick={handleLogOut} />
                             <TabButton name={"Update Profile"} isActive={activeButton==="Update Profile"} onclick={togglemenu("Update Profile")}/>
                         </>
                         }
                     </div>
                     {activeButton &&
-                    <ProfileSubMenu activeButton={activeButton}/>}
+                    <ProfileSubMenu errorMessage={errorMessage} setErrorMessage={setErrorMessage} activeButton={activeButton} setActiveButton={setActiveButton}/>}
                 </>
             }
         </div>
