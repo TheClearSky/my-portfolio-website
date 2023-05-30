@@ -9,8 +9,8 @@ export default function ProjectsPage() {
     <div className='projectslist'>
         <ProjectSection
             newCategoryTitle={"Solo Projects"} 
-            title={"My Portfolio Website ( This website )"}
-            iconnamelist={["html","css","javascript","react","reactrouter","vite","babylonjs","firebase"]}
+            title={"My Portfolio Website ( This website ) [Stack:MERN]"}
+            iconnamelist={["html","css","javascript","mongodb","expressjs","react","nodejs","reactrouter","vite","babylonjs","firebase"]}
             githublink={"https://github.com/TheClearSky/my-portfolio-website"}
         >
             A website displaying my portfolio, uses the latest 3d WebGL and WebGPU graphics using Babylon Js to build an awesome experience. Includes a live 3d scene and a chess game.
