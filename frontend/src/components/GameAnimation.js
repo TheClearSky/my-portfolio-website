@@ -1,6 +1,8 @@
 
 import { Vector3,Tools } from "@babylonjs/core";
-import {clearcameraconstraints,setchesscameraconstraints } from './SceneManager.js';
+import {clearcameraconstraints,setchesscameraconstraints,setdefaultcameraconstraints,setdefaultcamera,setinitialtransformsofchessboard,setinitialtransformsoftree } from './SceneManager.js';
+import { startAnimation,endAnimation,startGame,endGame } from "../apiSlices/chessSlice.js";
+import store from "../reduxstore.js";
 
 // Todo
 // Make this animations work for black too
@@ -10,7 +12,7 @@ import {clearcameraconstraints,setchesscameraconstraints } from './SceneManager.
 
 //Todo
 //Make the pieces pan in during the camerapan animation
-export class gameStartAnimations
+export class gameAnimations
 {
     constructor(trunk,canopy,instances,camera,chesspiecemanager,scene)
     {
@@ -21,8 +23,31 @@ export class gameStartAnimations
         this.chesspiecemanager=chesspiecemanager;
         this.scene=scene;
 
-        this.animationstage=0;
+        this.startAnimationStage=0;
+        this.startAnimationIsPlaying=false;
 
+        this.endAnimationStage=0;
+        this.endAnimationIsPlaying=false;
+
+        this.treefallbound=this.treefall.bind(this);
+        this.chessboardfallbound=this.chessboardfall.bind(this);
+        this.boardrotationbound=this.boardrotation.bind(this);
+        this.camerapananimationbound=this.camerapananimation.bind(this);
+        this.setcameraforplayingbound=this.setcameraforplaying.bind(this);
+        this.zoomoutbound=this.zoomout.bind(this);
+
+        this.chessboardEndFallbound=this.chessboardEndFall.bind(this);
+
+
+        this.unsubscribetostore=store.subscribe(()=>{
+            if(store.getState().chess.signalToStopAnimation)
+            {
+                this.skipCurrentAnimation();
+            }
+        })
+    }
+    initStartAnimations()
+    {
         //tree and chessboardfall
         this.voidy=-100
         this.fallstep=0;
@@ -53,21 +78,18 @@ export class gameStartAnimations
         this.zoomintoz=2.4;
         this.radiusstart=2.7;
         this.radiusend=12;
-
-        this.treefallbound=this.treefall.bind(this);
-        this.chessboardfallbound=this.chessboardfall.bind(this);
-        this.boardrotationbound=this.boardrotation.bind(this);
-        this.camerapananimationbound=this.camerapananimation.bind(this);
-        this.zoomoutbound=this.zoomout.bind(this);
     }
-    playnextstage()
+    playStartAnimationNextStage()
     {
-        switch(this.animationstage)
+        switch(this.startAnimationStage)
         {
             case 0:
+                this.startAnimationIsPlaying=true;
+                store.dispatch(startAnimation());
+                this.initStartAnimations();
                 this.scene.registerBeforeRender(this.treefallbound);
                 this.scene.registerBeforeRender(this.chessboardfallbound);
-                ++this.animationstage;
+                ++this.startAnimationStage;
                 break;
             case 1:
                 this.canopy.isVisible=false;
@@ -75,25 +97,25 @@ export class gameStartAnimations
                 this.scene.unregisterBeforeRender(this.treefallbound);
                 this.scene.unregisterBeforeRender(this.chessboardfallbound);
                 clearcameraconstraints(this.camera);
-
+                
                 this.setcameraforchessboardanimation();
                 this.scene.registerBeforeRender(this.boardrotationbound);
                 this.chesspiecemanager.updatechessboardlocation();
                 this.chesspiecemanager.putpiece(4,4,this.chesspiecemanager.piecetypes.king,true);
                 this.chesspiecemanager.putpiece(3,3,this.chesspiecemanager.piecetypes.king,false);
-                ++this.animationstage;
+                ++this.startAnimationStage;
                 break;
             case 2:
                 this.scene.unregisterBeforeRender(this.boardrotationbound);
                 this.chesspiecemanager.updatechessboardlocation();
                 this.chesspiecemanager.setupdefaultboardbound();
                 this.scene.registerBeforeRender(this.camerapananimationbound);
-                ++this.animationstage;
+                ++this.startAnimationStage;
                 break;
             case 3:
                 this.scene.unregisterBeforeRender(this.camerapananimationbound);
                 this.scene.registerBeforeRender(this.zoomoutbound);
-                ++this.animationstage;
+                ++this.startAnimationStage;
                 break;
             case 4:
                 this.scene.unregisterBeforeRender(this.zoomoutbound);
@@ -102,7 +124,10 @@ export class gameStartAnimations
                 this.chesspiecemanager.updatechessboardlocation();
                 
                 this.chesspiecemanager.startlistening(this.scene);
-                ++this.animationstage;
+                this.startAnimationStage=0;
+                this.startAnimationIsPlaying=false;
+                store.dispatch(endAnimation());
+                store.dispatch(startGame());
                 break;
         }
     }
@@ -110,6 +135,7 @@ export class gameStartAnimations
     
     treefall()
     {
+        
         if(this.canopy.position.y>this.voidy)
         {
             this.canopy.position.y-=this.fallstep;
@@ -128,6 +154,7 @@ export class gameStartAnimations
     {
         if(this.instances[0].instance.position.y>this.voidy)
         {
+            
             this.instances.forEach(ins=>{
                 let {instance}=ins;
                 instance.position.y-=this.fallandrotatestep;
@@ -138,11 +165,23 @@ export class gameStartAnimations
         }
         else
         {
-            this.playnextstage();
+            this.playStartAnimationNextStage();
         }
     }
 
-
+    setchessboardforplaying()
+    {
+        this.instances.forEach(ins=>{
+            let {instance,i,j}=ins;
+            
+            instance.rotation.y=Tools.ToRadians(0);
+            instance.rotation.x=Tools.ToRadians(0);
+            instance.rotation.z=Tools.ToRadians(0);
+            
+            instance.scaling=new Vector3(1,1,1);
+            instance.position=new Vector3(i,0,j);
+        });
+    }
     setcameraforchessboardanimation()
     {
         this.camera.detachControl();
@@ -151,15 +190,7 @@ export class gameStartAnimations
         this.camera.radius=10;
         this.camera.target=Vector3.Zero();
 
-        this.instances.forEach(ins=>{
-            let {instance}=ins;
-            
-            instance.rotation.y=Tools.ToRadians(0);
-            instance.rotation.x=Tools.ToRadians(0);
-            instance.rotation.z=Tools.ToRadians(0);
-            
-            instance.scaling=new Vector3(1,1,1);
-        });
+        this.setchessboardforplaying();
         
         this.instances.forEach(ins=>{
             let {instance,distance,i,j}=ins;
@@ -202,10 +233,11 @@ export class gameStartAnimations
             }
             this.total+=this.step;
             this.step*=0.9983;
+            
         }
         else
         {
-            this.playnextstage();
+            this.playStartAnimationNextStage();
         }
     }
 
@@ -236,6 +268,7 @@ export class gameStartAnimations
                 this.camera.target= new Vector3(this.startx,this.y,-this.z);
                 this.camera.alpha=-this.alpha;
                 ++this.currentanimation;
+                
             }
         }
         else if(this.currentanimation==2)
@@ -246,24 +279,28 @@ export class gameStartAnimations
             }
             else
             {
-                this.playnextstage();
+                this.playStartAnimationNextStage();
             }
         }
     }
 
-    
+    setcameraforplaying()
+    {
+        //for black
+        //zoomintoz=-zoomintoz
+        this.camera.target=new Vector3(0,0,this.zoomintoz);
+        //for black
+        //camera.alpha=Tools.ToRadians(90);
+        this.camera.alpha=Tools.ToRadians(-90);
+        this.camera.beta=1.2;
+        this.camera.radius=this.radiusend;
+    }
     zoomout()
     {
         if(!this.runonce)
         {
             this.runonce=true;
-            //for black
-            //zoomintoz=-zoomintoz
-            this.camera.target=new Vector3(0,0,this.zoomintoz);
-            //for black
-            //camera.alpha=Tools.ToRadians(90);
-            this.camera.alpha=Tools.ToRadians(-90);
-            this.camera.beta=1.2;
+            this.setcameraforplayingbound();
             this.camera.radius=this.radiusstart;
         }
         else if(this.camera.radius<this.radiusend)
@@ -272,7 +309,117 @@ export class gameStartAnimations
         }
         else
         {
-            this.playnextstage();
+            this.playStartAnimationNextStage();
+        }
+    }
+
+    playEndAnimationNextStage()
+    {
+        switch(this.endAnimationStage)
+        {
+            case 0:
+                this.endAnimationIsPlaying=true;
+                store.dispatch(startAnimation());
+                this.initEndAnimations();
+                this.chesspiecemanager.stoplistening(this.scene);
+                clearcameraconstraints(this.camera);
+                this.camera.target=Vector3.Zero();
+                this.scene.registerBeforeRender(this.chessboardEndFallbound);
+                ++this.endAnimationStage;
+                break;
+            case 1:
+                this.scene.unregisterBeforeRender(this.chessboardEndFallbound);
+                this.chesspiecemanager.removeallpiecesbound();
+                this.chesspiecemanager.stoplistening(this.scene);
+                setdefaultcameraconstraints(this.camera);
+                setdefaultcamera(this.camera);
+                setinitialtransformsoftree(this.canopy,this.trunk);
+                setinitialtransformsofchessboard(this.instances);
+                
+                this.canopy.isVisible=true;
+                this.trunk.isVisible=true;
+                this.endAnimationStage=0;
+                this.endAnimationIsPlaying=false;
+                store.dispatch(endAnimation());
+                store.dispatch(endGame());
+                break;
+        }
+    }
+    initEndAnimations()
+    {
+        //chessboardfall
+        this.voidyend=-10;
+        this.fallstepend=[];
+        this.instances.forEach(ins=>{
+            this.fallstepend.push(0);
+        })
+        this.initialradius=20;
+    }
+    chessboardEndFall()
+    {
+        if(this.instances[4*8+4].instance.position.y>this.voidy)
+        {
+            this.instances.forEach((ins,index)=>{
+                let {instance,distance}=ins;
+                if(distance>this.initialradius)
+                {
+                    instance.position.addInPlaceFromFloats(0,-this.fallstepend[index],0);
+                    this.fallstepend[index]+=0.0008;
+                }
+            })
+            this.initialradius-=0.1;
+            this.chesspiecemanager.updatechessboardlocationbound();
+            this.camera.radius+=0.02;
+            this.camera.alpha-=0.012;
+        }
+        else
+        {
+            this.playEndAnimationNextStage();
+        }
+    }
+    skipCurrentAnimation()
+    {
+        if(this.startAnimationIsPlaying)
+        {
+            this.startAnimationStage=0;
+            this.startAnimationIsPlaying=false;
+            //unregistering all functions
+            this.scene.unregisterBeforeRender(this.treefallbound);
+            this.scene.unregisterBeforeRender(this.chessboardfallbound);
+            this.scene.unregisterBeforeRender(this.boardrotationbound);
+            this.scene.unregisterBeforeRender(this.camerapananimationbound);
+            this.scene.unregisterBeforeRender(this.zoomoutbound);
+
+            this.canopy.isVisible=false;
+            this.trunk.isVisible=false;
+            clearcameraconstraints(this.camera);
+            setchesscameraconstraints(this.camera);
+            this.setchessboardforplaying();
+            this.setcameraforplaying();
+            this.chesspiecemanager.setupdefaultboardbound(false);
+            this.camera.attachControl(null);
+            this.chesspiecemanager.updatechessboardlocation();
+            this.chesspiecemanager.startlistening(this.scene);
+            store.dispatch(endAnimation());
+            store.dispatch(startGame());
+        }
+        else if(this.endAnimationIsPlaying)
+        {
+            this.endAnimationStage=0;
+            this.endAnimationIsPlaying=false;
+            //unregistering all functons
+            this.scene.unregisterBeforeRender(this.chessboardEndFallbound);
+
+            this.chesspiecemanager.removeallpiecesbound();
+            this.chesspiecemanager.stoplistening(this.scene);
+            setdefaultcameraconstraints(this.camera);
+            setdefaultcamera(this.camera);
+            setinitialtransformsoftree(this.canopy,this.trunk);
+            setinitialtransformsofchessboard(this.instances);
+            this.canopy.isVisible=true;
+            this.trunk.isVisible=true;
+            store.dispatch(endAnimation());
+            store.dispatch(endGame());
         }
     }
 }

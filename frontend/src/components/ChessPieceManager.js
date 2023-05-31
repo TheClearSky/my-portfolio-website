@@ -84,9 +84,9 @@ export class ChessPieceManager
         }
         this.turn=game.turn();
     }
-    setupdefaultboard()
+    setupdefaultboard(animated=true)
     {
-        this.setfromboardbound(new Chess());
+        this.setfromboardbound(new Chess(),animated);
     }
     constructor(originalwhitepieces,originalblackpieces,chessboardinstances,piecetypes,whitebox,blackbox,whiteselectedbox,blackselectedbox,scene)
     {
@@ -141,6 +141,7 @@ export class ChessPieceManager
         this.updatesinglecelllocationwithpiecebound=this.updatesinglecelllocationwithpiece.bind(this);
         this.piecefallanimationanddisposebound=this.piecefallanimationanddispose.bind(this);
         this.removepiecebound=this.removepiece.bind(this);
+        this.removeallpiecesbound=this.removeallpieces.bind(this);
         this.putpiecebound=this.putpiece.bind(this);
         this.startlisteningbound=this.startlistening.bind(this);
         this.movepiecebound=this.movepiece.bind(this);
@@ -156,11 +157,7 @@ export class ChessPieceManager
         {
             for(let j=0;j<8;++j)
             {
-                let currlocation=this.chessboardinstances[i*8+j].instance.position;
-                
-                this.cells[i][j].location.x=currlocation.x;
-                this.cells[i][j].location.y=currlocation.y+0.1;
-                this.cells[i][j].location.z=currlocation.z;
+                this.updatesinglecelllocationwithpiecebound(i,j);
             }
         }
     }
@@ -216,6 +213,16 @@ export class ChessPieceManager
             }
             this.cells[i][j].piece=null;
             this.cells[i][j].piececolor=null;
+        }
+    }
+    removeallpieces(animate=true)
+    {
+        for(let i=0;i<8;++i)
+        {
+            for(let j=0;j<8;++j)
+            { 
+                this.removepiecebound(i,j,animate);
+            }
         }
     }
     putpiece(i,j,type,iswhite,animated=true)
@@ -316,6 +323,10 @@ export class ChessPieceManager
                 }
             }
         }
+    }
+    stoplistening(scene)
+    {
+        scene.onPointerObservable.remove(this.clickobserver);
     }
     handletileclick(i,j)
     {

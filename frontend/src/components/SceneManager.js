@@ -2,7 +2,7 @@ import {Color3,Color4,Vector3,Tools,EngineInstrumentation,ArcRotateCamera,Hemisp
 import "@babylonjs/loaders";
 import {setoffsetx,setoffsety} from './DrawStars.js';
 import { ChessPieceManager } from './ChessPieceManager.js';
-import { gameStartAnimations } from './GameStartAnimation.js';
+import { gameAnimations } from './GameAnimation.js';
 
 function setnight(lights)
 {
@@ -42,6 +42,13 @@ export function setdefaultcameraconstraints(camera)
     camera.lowerRadiusLimit = 28;
     camera.upperRadiusLimit = 50;
     camera.upperBetaLimit = Tools.ToRadians(105);
+}
+export function setdefaultcamera(camera)
+{
+    camera.alpha=Tools.ToRadians(0);
+    camera.beta=Tools.ToRadians(80);
+    camera.radius=30;
+    camera.target=new Vector3(0,0,0);
 }
 function showperformance(scene)
 {
@@ -111,12 +118,14 @@ function setscene(scene)
     // Tools.ToRadians(-90), Tools.ToRadians(135),
     // 10,Vector3.Zero(), scene);
     let camera = new ArcRotateCamera("Camera", Tools.ToRadians(0), Tools.ToRadians(80), 30,
-        new Vector3(0,0,0), scene);
+    new Vector3(0,0,0), scene);
+        
     
     //enable this for black
     // camera.alpha=Tools.ToRadians(90);
     
     setdefaultcameraconstraints(camera);
+    setdefaultcamera(camera);
     camera.attachControl(null, true);
 
 
@@ -234,11 +243,10 @@ async function setchesspiecesandtreeandmaterials(scene)
     return {whitepieces,blackpieces,piecetypes,trunk,canopy,whitemat,blackmat,whiteselectedmat,blackselectedmat};
 }
 
-function setinitialtransformsoftree(canopy,trunk)
+export function setinitialtransformsoftree(canopy,trunk)
 {
-    let offsetvector = new Vector3(1,-5,2);
-    canopy.position.addInPlace(offsetvector);
-    trunk.position.addInPlace(offsetvector);
+    canopy.position=new Vector3(0.8,2.6,0);
+    trunk.position=new Vector3(0.5,-5.2,0.2);
 }
 
 function makechesspiecesinvisible(whitepieces,blackpieces)
@@ -293,10 +301,12 @@ function makechessboard(whitemat,blackmat,whiteselectedmat,blackselectedmat,scen
     return {instances,whitebox,blackbox,whiteselectedbox,blackselectedbox};
 }
 
-function setinitialtransformsofchessboard(instances)
+export function setinitialtransformsofchessboard(instances)
 {
     instances.forEach(ins=>{
-        let {instance}=ins;
+        let {instance,i,j}=ins;
+        instance.position=new Vector3(i,0,j);
+        instance.setPivotPoint(new Vector3(-i,0,-j));
         instance.position.addInPlaceFromFloats(0,-7,3.1);
         instance.rotation.y=Tools.ToRadians(30);
         instance.rotation.x=Tools.ToRadians(50);
@@ -305,7 +315,6 @@ function setinitialtransformsofchessboard(instances)
         instance.scaling=new Vector3(0.8,0.8,0.8)
     });
 }
-
 
 
 export async function onSceneReady(scene) {
@@ -327,11 +336,11 @@ export async function onSceneReady(scene) {
     let chess=new ChessPieceManager(whitepieces,blackpieces,instances,piecetypes,whitebox,blackbox,whiteselectedbox,blackselectedbox,scene);
     
     
-    let anim=new gameStartAnimations(trunk,canopy,instances,camera,chess,scene);
+    let anim=new gameAnimations(trunk,canopy,instances,camera,chess,scene);
     
     
-    let gamestartclickobserver= scene.onPointerObservable.add(detechchessboardclick);
-    function detechchessboardclick(pointerInfo)
+    let gamestartclickobserver= scene.onPointerObservable.add(detectchessboardclick);
+    function detectchessboardclick(pointerInfo)
     {      		
         if ((pointerInfo.type==PointerEventTypes.POINTERDOWN)&&(pointerInfo.pickInfo.hit)) {
             let picked=pointerInfo.pickInfo.pickedMesh;
@@ -339,7 +348,7 @@ export async function onSceneReady(scene) {
                 if(ins.instance==picked)
                 {
                     scene.onPointerObservable.remove(gamestartclickobserver);
-                    anim.playnextstage();
+                    anim.playStartAnimationNextStage();
                 }
             })
         }
