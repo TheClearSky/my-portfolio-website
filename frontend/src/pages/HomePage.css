@@ -21,4 +21,14 @@
 }
 .tooltipclosebutton:hover,.tooltipclosebutton:focus{  
     text-shadow: rgb(255, 255, 255) 0px 0 0.4em;
+    cursor: pointer;
+}
+.skipanimationbutton{
+    font-size: 1.2rem;
+    
+    text-shadow: rgba(255, 255, 255, 0.664) 0px 0 0.2em;
+}
+.skipanimationbutton:hover{
+    text-shadow: rgb(255, 255, 255) 0px 0 0.4em;
+    cursor: pointer;
 }
