@@ -21,8 +21,8 @@ export default function NameCard({textDelayInSeconds:p_textDelayInSeconds=5}) {
     <Glasscard className={"card"+((minimized)?" minimized":"")}>
         {(minimized)?
         <>
-            <div onClick={toggleminimized} className="minimizebutton title">+</div>
-            <div className='maximizename title' >NameCard</div>
+            <div onClick={toggleminimized} className="minimizebutton title" style={{right:"17px"}}>+</div>
+            <div className='maximizename title' >Name Card</div>
         </>
         :
         <>
