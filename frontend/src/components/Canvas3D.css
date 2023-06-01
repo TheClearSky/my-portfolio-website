@@ -1,6 +1,6 @@
 .renderCanvas {
     height: 500px;
-    min-width: 60%;
+    min-width: 90%;
     max-width: 100%;
     touch-action: none;
     background: transparent;
