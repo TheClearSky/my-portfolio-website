@@ -16,7 +16,7 @@ const authorizetoken = asyncHandler(async (req, res, next) => {
   if (token) {
     try {
 
-      req.user = await getUser(token);
+      req.user = await getUserFromToken(token);
 
     } catch (error) {
       req.user = {};
