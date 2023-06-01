@@ -19,16 +19,16 @@
     border-width: 0em;
     border: 2px solid rgb(187, 187, 187);
 }
-.tooltipclosebutton:hover,.tooltipclosebutton:focus{  
+.tooltipclosebutton:hover,.tooltipclosebutton:focus,.skipanimationbutton:hover,.piecechoices>span:hover{  
     text-shadow: rgb(255, 255, 255) 0px 0 0.4em;
     cursor: pointer;
 }
-.skipanimationbutton{
+.skipanimationbutton,.piecechoices>span{
     font-size: 1.2rem;
     
     text-shadow: rgba(255, 255, 255, 0.664) 0px 0 0.2em;
 }
-.skipanimationbutton:hover{
-    text-shadow: rgb(255, 255, 255) 0px 0 0.4em;
-    cursor: pointer;
+.piecechoices{
+    display: flex;
+    gap:1em;
 }

@@ -1,6 +1,8 @@
 import { Vector3 } from "@babylonjs/core";
 import {PointerEventTypes} from '@babylonjs/core';
 import { Chess } from 'chess.js';
+import { sendSignalToGetPromotionPiece,readThePromotionPiece } from "../apiSlices/chessSlice.js";
+import store from "../reduxstore.js";
 
 //Todo 
 //Create animations of enpassent, queenside castle and kingside castle
@@ -144,12 +146,15 @@ export class ChessPieceManager
         this.removeallpiecesbound=this.removeallpieces.bind(this);
         this.putpiecebound=this.putpiece.bind(this);
         this.startlisteningbound=this.startlistening.bind(this);
+        this.getpromotionpiecefromuserbound=this.getpromotionpiecefromuser.bind(this);
         this.movepiecebound=this.movepiece.bind(this);
         this.handletileclickbound=this.handletileclick.bind(this);
         this.handlepiececlickbound=this.handlepiececlick.bind(this);
         this.highlightcellbound=this.highlightcell.bind(this);
         this.unhighlightcellbound=this.unhighlightcell.bind(this);
         this.updateboardselectionturnandstatusbound=this.updateboardselectionturnandstatus.bind(this);
+
+        
     }
     updatechessboardlocation()
     {
@@ -242,19 +247,79 @@ export class ChessPieceManager
         let currlocation=currentcell.location;
         this.cells[i][j].piece.position=new Vector3(currlocation.x,currlocation.y,currlocation.z);
     }
-    movepiece(fromi,fromj,toi,toj,animated=true,speed=0.03)
+    async getpromotionpiecefromuser()
+    {
+        return new Promise(resolve=>{
+            store.dispatch(sendSignalToGetPromotionPiece());
+            const unsubscribetostore=store.subscribe(()=>{
+                const piece=store.getState().chess.promotionpiece;
+                if(piece)
+                {
+                    store.dispatch(readThePromotionPiece());
+                    unsubscribetostore();
+                    resolve(piece);
+                }
+            })
+        })
+        
+    }
+    async movepiece(fromi,fromj,toi,toj,promotionpiece,animated=true,speed=0.03)
     {
         if((fromi==toi)&&(fromj==toj)) return;
         if(this.cells[fromi][fromj]==null) return;
 
+        const fromFen=this.convertnotationbound(this.notationtypes.local,this.notationtypes.chessjsfen,fromi,fromj);
+        const toFen=this.convertnotationbound(this.notationtypes.local,this.notationtypes.chessjsfen,toi,toj);
+
+        //handle pawn promotions
+        if((this.chessgame.get(fromFen).type==='p')&&
+        ((toj==0)||(toj==7))&&
+        (this.chessgame.moves({square:fromFen,verbose:true}).map(move=>move.to).includes(toFen)))
+        {
+            if(!promotionpiece)
+            {
+                promotionpiece=await this.getpromotionpiecefromuserbound();
+            }
+        }
         try
         {
             //validation of move
-            let move = this.chessgame.move(
+            let move;
+            if(promotionpiece)
             {
-                from: this.convertnotationbound(this.notationtypes.local,this.notationtypes.chessjsfen,fromi,fromj), 
-                to: this.convertnotationbound(this.notationtypes.local,this.notationtypes.chessjsfen,toi,toj) 
-            })
+                move = this.chessgame.move(
+                {
+                    from: fromFen, 
+                    to: toFen,
+                    promotion:promotionpiece
+                })
+                let replacetypenumber;
+                switch(promotionpiece)
+                {
+                    case "q":
+                        replacetypenumber=this.piecetypes.queen;
+                        break;
+                    case "r":
+                        replacetypenumber=this.piecetypes.rook;
+                        break;
+                    case "n":
+                        replacetypenumber=this.piecetypes.knight;
+                        break;
+                    case "b":
+                        replacetypenumber=this.piecetypes.bishop;
+                        break;
+                    
+                }
+                this.putpiecebound(fromi,fromj,replacetypenumber,(this.chessgame.turn()==='b'),false);
+            }
+            else
+            {
+                move = this.chessgame.move(
+                {
+                    from: fromFen, 
+                    to: toFen
+                })
+            }
             
             if((move.flags=="e")||(move.flags=="q")||(move.flags=="k"))
             {
@@ -328,17 +393,17 @@ export class ChessPieceManager
     {
         scene.onPointerObservable.remove(this.clickobserver);
     }
-    handletileclick(i,j)
+    async handletileclick(i,j)
     {
         if(this.selectedcelli!=null)
         {
-            this.movepiecebound(this.selectedcelli,this.selectedcellj,i,j);
+            await this.movepiecebound(this.selectedcelli,this.selectedcellj,i,j);
             this.selectedcelli=null;
             this.selectedcellj=null;
         }
         this.updateboardselectionturnandstatusbound();
     }
-    handlepiececlick(i,j)
+    async handlepiececlick(i,j)
     {
         if(this.selectedcelli==null)
         {
@@ -347,7 +412,7 @@ export class ChessPieceManager
         }
         else
         {
-            this.movepiecebound(this.selectedcelli,this.selectedcellj,i,j);
+            await this.movepiecebound(this.selectedcelli,this.selectedcellj,i,j);
             this.selectedcelli=null;
             this.selectedcellj=null;
         }
