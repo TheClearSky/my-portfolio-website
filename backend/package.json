@@ -20,6 +20,7 @@
   "homepage": "https://github.com/TheClearSky/my-portfolio-website#readme",
   "dependencies": {
     "bcryptjs": "^2.4.3",
+    "chess.js": "^1.0.0-beta.6",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",

@@ -3,17 +3,20 @@ import asyncHandler from 'express-async-handler';
 import RevokedToken from '../database/models/RevokedToken.js';
 import User from '../database/models/User.js';
 
+async function getUserFromToken(token) {
+  const decoded = jwt.verify(token, process.env.JWT_SECRET);
+  const tokenExists = await RevokedToken.findOne({ token }).exec();
+  if (tokenExists) {
+    throw new Error("Token has been Revoked");
+  }
+  return User.findById(decoded.userId).select('-password').exec();
+}
 const authorizetoken = asyncHandler(async (req, res, next) => {
   let token = req.headers?.authorization?.split(' ')[1];
   if (token) {
     try {
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
-      const tokenExists = await RevokedToken.findOne({ token }).exec();
-      if(tokenExists)
-      {
-        throw new Error("Token has been Revoked");
-      }
-      req.user = await User.findById(decoded.userId).select('-password').exec();
+
+      req.user = await getUser(token);
 
     } catch (error) {
       req.user = {};
@@ -24,4 +27,4 @@ const authorizetoken = asyncHandler(async (req, res, next) => {
   next();
 });
 
-export { authorizetoken };
+export { authorizetoken,getUserFromToken };
