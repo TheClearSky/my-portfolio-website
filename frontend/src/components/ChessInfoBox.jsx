@@ -6,6 +6,9 @@ import ChessInfoPickMenu from './ChessInfoPickMenu';
 import { useDispatch,useSelector } from 'react-redux';
 import { updateSingleOrMulti,updateSinglePlayerMode,updateMultiPlayerMode,updateColor,sendRequestToJoinGameID } from '../apiSlices/chessSlice';
 import { useGetProfileQuery } from '../apiSlices/userApiSlice';
+import FromMessage from "./FromMessage.jsx";
+import ToMessage from "./ToMessage.jsx";
+
 
 //To do
 //Random Match Implememt
@@ -79,7 +82,8 @@ export default function ChessInfoBox() {
             {(singleOrMulti==="Multi Player")&&
             <>
                 <MultiplayerChatBox player1={profileData.name} player2={multiplayerDetails.opponentname}>
-
+                    <FromMessage>In development</FromMessage>
+                    <ToMessage>Coming Soon</ToMessage>
                 </MultiplayerChatBox>
             </>}
         </Glasscard>
