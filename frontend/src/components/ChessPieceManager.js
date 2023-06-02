@@ -1,4 +1,4 @@
-import { Vector3 } from "@babylonjs/core";
+import { Vector3,Tools } from "@babylonjs/core";
 import {PointerEventTypes} from '@babylonjs/core';
 import { Chess } from 'chess.js';
 import { sendSignalToGetPromotionPiece,readThePromotionPiece,startGame,endGame,setGameID,setOpponentName,updateColor,clearMultiplayerDetails,setMultiplayerErrorMessage, readRequestToJoinGameID,clearMultiplayerErrorMessage } from "../apiSlices/chessSlice.js";
@@ -227,6 +227,17 @@ export class ChessPieceManager
     }
     async begingame()
     {
+        if((this.currentGameMode.color=="black")||(this.currentGameMode.color=="Black"))
+        {
+            //for black
+            this.camera.target=new Vector3(0,0,-2.4);
+            this.camera.alpha=Tools.ToRadians(90);
+        }
+        else
+        {
+            this.camera.target=new Vector3(0,0,2.4);
+            this.camera.alpha=Tools.ToRadians(-90);
+        }
         store.dispatch(clearMultiplayerErrorMessage());
         if(this.currentGameMode.singleOrMulti==="Single Player")
         {
@@ -329,7 +340,7 @@ export class ChessPieceManager
             }
         }
     }
-    constructor(originalwhitepieces,originalblackpieces,chessboardinstances,piecetypes,whitebox,blackbox,whiteselectedbox,blackselectedbox,scene)
+    constructor(originalwhitepieces,originalblackpieces,chessboardinstances,piecetypes,whitebox,blackbox,whiteselectedbox,blackselectedbox,scene,camera)
     {
 
         this.originalwhitepieces=originalwhitepieces;
@@ -341,6 +352,7 @@ export class ChessPieceManager
         this.whiteselectedbox=whiteselectedbox;
         this.blackselectedbox=blackselectedbox;
         this.scene=scene;
+        this.camera=camera;
         this.cells=[];
         this.fallvoidy=-50;
 

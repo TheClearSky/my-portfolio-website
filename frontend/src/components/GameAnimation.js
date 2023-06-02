@@ -306,12 +306,20 @@ export class gameAnimations
 
     setcameraforplaying()
     {
-        //for black
-        //zoomintoz=-zoomintoz
-        this.camera.target=new Vector3(0,0,this.zoomintoz);
-        //for black
-        //camera.alpha=Tools.ToRadians(90);
-        this.camera.alpha=Tools.ToRadians(-90);
+        let color=store.getState().chess.gameMode.color;
+        if((color=="black")||(color=="Black"))
+        {
+            //for black
+            this.camera.target=new Vector3(0,0,-this.zoomintoz);
+            this.camera.alpha=Tools.ToRadians(90);
+        }
+        else
+        {
+            this.camera.target=new Vector3(0,0,this.zoomintoz);
+            this.camera.alpha=Tools.ToRadians(-90);
+        }
+        
+        
         this.camera.beta=1.2;
         this.camera.radius=this.radiusend;
     }

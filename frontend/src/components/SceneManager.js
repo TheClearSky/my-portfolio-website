@@ -333,7 +333,7 @@ export async function onSceneReady(scene) {
     setinitialtransformsofchessboard(instances);
 
     
-    let chess=new ChessPieceManager(whitepieces,blackpieces,instances,piecetypes,whitebox,blackbox,whiteselectedbox,blackselectedbox,scene);
+    let chess=new ChessPieceManager(whitepieces,blackpieces,instances,piecetypes,whitebox,blackbox,whiteselectedbox,blackselectedbox,scene,camera);
     
     
     let anim=new gameAnimations(trunk,canopy,instances,camera,chess,scene);
