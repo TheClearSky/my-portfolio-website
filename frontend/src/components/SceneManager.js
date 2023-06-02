@@ -319,7 +319,6 @@ export function setinitialtransformsofchessboard(instances)
 
 export async function onSceneReady(scene) {
     
-    console.log("called sceneready");
     let {light,light2,camera}=setscene(scene);
     setbackgroundmovement(scene,camera);
     

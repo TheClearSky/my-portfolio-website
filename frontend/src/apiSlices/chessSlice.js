@@ -42,6 +42,9 @@ export const chessSlice = createSlice({
         sendStopAnimationSignal:(state) =>{
             state.signalToStopAnimation=true;
         },
+        readStopAnimationSignal:(state)=>{
+            state.signalToStopAnimation=false;
+        },
         sendSignalToGetPromotionPiece:(state)=> {
             state.signalToGetPromotionPiece=true;
         },
@@ -112,6 +115,6 @@ export const chessSlice = createSlice({
 })
 
 
-export const { startGame,endGame,startAnimation,endAnimation,sendStopAnimationSignal,sendSignalToGetPromotionPiece,setPromotionPiece,readThePromotionPiece,updateSingleOrMulti,updateSinglePlayerMode,updateMultiPlayerMode,updateColor,setGameID,setOpponentName,clearMultiplayerDetails,setMultiplayerErrorMessage,sendRequestToJoinGameID,readRequestToJoinGameID,clearMultiplayerErrorMessage,boardisReady,boardisnotReady} = chessSlice.actions;
+export const { startGame,endGame,startAnimation,endAnimation,sendStopAnimationSignal,sendSignalToGetPromotionPiece,setPromotionPiece,readThePromotionPiece,updateSingleOrMulti,updateSinglePlayerMode,updateMultiPlayerMode,updateColor,setGameID,setOpponentName,clearMultiplayerDetails,setMultiplayerErrorMessage,sendRequestToJoinGameID,readRequestToJoinGameID,clearMultiplayerErrorMessage,boardisReady,boardisnotReady,readStopAnimationSignal} = chessSlice.actions;
 
 export default chessSlice.reducer;

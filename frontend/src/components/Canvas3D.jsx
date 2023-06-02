@@ -36,9 +36,7 @@ export default function Canvas3D() {
         resizeObserver.observe(canvas);
      
         return () => {
-            console.log(sceneresult);
             sceneresult.chess.then((result)=>{
-                console.log(result);
                 result.chess.endgamebound();
                 result.chess.removeallpiecesbound(false);
                 result.anim.resetallanimationsbound();

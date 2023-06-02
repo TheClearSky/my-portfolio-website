@@ -1,7 +1,7 @@
 
 import { Vector3,Tools } from "@babylonjs/core";
 import {clearcameraconstraints,setchesscameraconstraints,setdefaultcameraconstraints,setdefaultcamera,setinitialtransformsofchessboard,setinitialtransformsoftree } from './SceneManager.js';
-import { startAnimation,endAnimation, boardisReady, boardisnotReady } from "../apiSlices/chessSlice.js";
+import { startAnimation,endAnimation, boardisReady, boardisnotReady, readStopAnimationSignal } from "../apiSlices/chessSlice.js";
 import store from "../reduxstore.js";
 
 // Todo
@@ -41,15 +41,16 @@ export class gameAnimations
         this.resetallanimationsbound=this.resetallanimations.bind(this);
 
 
+        
+    }
+    initStartAnimations()
+    {
         this.unsubscribetostore=store.subscribe(()=>{
             if(store.getState().chess.signalToStopAnimation)
             {
                 this.skipCurrentAnimation();
             }
         })
-    }
-    initStartAnimations()
-    {
         //tree and chessboardfall
         this.voidy=-100
         this.fallstep=0;
@@ -81,9 +82,16 @@ export class gameAnimations
         this.radiusstart=2.7;
         this.radiusend=12;
     }
+    endAnimationListener()
+    {
+        if(this.unsubscribetostore)
+        {
+            this.unsubscribetostore();
+        }
+        this.unsubscribetostore=null;
+    }
     resetallanimations()
     {
-        console.log("called");
         this.startAnimationStage=0;
         this.startAnimationIsPlaying=false;
 
@@ -92,7 +100,6 @@ export class gameAnimations
     }
     playStartAnimationNextStage()
     {
-        console.log("called with anim stage:",this.startAnimationStage,this.startAnimationIsPlaying);
         switch(this.startAnimationStage)
         {
             case 0:
@@ -120,7 +127,7 @@ export class gameAnimations
             case 2:
                 this.scene.unregisterBeforeRender(this.boardrotationbound);
                 this.chesspiecemanager.updatechessboardlocation();
-                this.chesspiecemanager.setupdefaultboardbound();
+                this.chesspiecemanager.setupdefaultboardbound(false);
                 this.scene.registerBeforeRender(this.camerapananimationbound);
                 ++this.startAnimationStage;
                 break;
@@ -140,6 +147,7 @@ export class gameAnimations
                 this.startAnimationStage=0;
                 this.startAnimationIsPlaying=false;
                 store.dispatch(endAnimation());
+                this.endAnimationListener();
                 break;
         }
     }
@@ -354,11 +362,18 @@ export class gameAnimations
                 this.endAnimationStage=0;
                 this.endAnimationIsPlaying=false;
                 store.dispatch(endAnimation());
+                this.endAnimationListener();
                 break;
         }
     }
     initEndAnimations()
     {
+        this.unsubscribetostore=store.subscribe(()=>{
+            if(store.getState().chess.signalToStopAnimation)
+            {
+                this.skipCurrentAnimation();
+            }
+        })
         //chessboardfall
         this.voidyend=-10;
         this.fallstepend=[];
@@ -391,6 +406,7 @@ export class gameAnimations
     }
     skipCurrentAnimation()
     {
+        store.dispatch(readStopAnimationSignal());
         if(this.startAnimationIsPlaying)
         {
             this.startAnimationStage=0;
@@ -414,6 +430,7 @@ export class gameAnimations
             store.dispatch(boardisReady());
             this.chesspiecemanager.begingamebound();
             store.dispatch(endAnimation());
+            this.endAnimationListener();
         }
         else if(this.endAnimationIsPlaying)
         {
@@ -431,6 +448,7 @@ export class gameAnimations
             this.canopy.isVisible=true;
             this.trunk.isVisible=true;
             store.dispatch(endAnimation());
+            this.endAnimationListener();
         }
     }
 }
