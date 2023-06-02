@@ -38,6 +38,8 @@ export class gameAnimations
 
         this.chessboardEndFallbound=this.chessboardEndFall.bind(this);
 
+        this.resetallanimationsbound=this.resetallanimations.bind(this);
+
 
         this.unsubscribetostore=store.subscribe(()=>{
             if(store.getState().chess.signalToStopAnimation)
@@ -79,8 +81,18 @@ export class gameAnimations
         this.radiusstart=2.7;
         this.radiusend=12;
     }
+    resetallanimations()
+    {
+        console.log("called");
+        this.startAnimationStage=0;
+        this.startAnimationIsPlaying=false;
+
+        this.endAnimationStage=0;
+        this.endAnimationIsPlaying=false;
+    }
     playStartAnimationNextStage()
     {
+        console.log("called with anim stage:",this.startAnimationStage,this.startAnimationIsPlaying);
         switch(this.startAnimationStage)
         {
             case 0:

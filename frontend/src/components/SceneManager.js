@@ -319,6 +319,7 @@ export function setinitialtransformsofchessboard(instances)
 
 export async function onSceneReady(scene) {
     
+    console.log("called sceneready");
     let {light,light2,camera}=setscene(scene);
     setbackgroundmovement(scene,camera);
     
@@ -353,6 +354,7 @@ export async function onSceneReady(scene) {
             })
         }
     }
+    return {chess,anim};
     // turnonchessmode();
     // console.log("done")
     // startchessgameanimation(instances,camera,scene);

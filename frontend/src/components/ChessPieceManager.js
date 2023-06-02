@@ -187,6 +187,10 @@ export class ChessPieceManager
     }
     async endgame(oldgamemode)
     {
+        if(!oldgamemode)
+        {
+            oldgamemode=this.currentGameMode;
+        }
         if(oldgamemode.singleOrMulti==="Single Player")
         {
             if(oldgamemode.singlePlayerMode==="Pass And Play")
