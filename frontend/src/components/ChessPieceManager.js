@@ -1,11 +1,15 @@
 import { Vector3 } from "@babylonjs/core";
 import {PointerEventTypes} from '@babylonjs/core';
 import { Chess } from 'chess.js';
-import { sendSignalToGetPromotionPiece,readThePromotionPiece } from "../apiSlices/chessSlice.js";
+import { sendSignalToGetPromotionPiece,readThePromotionPiece,startGame,endGame,setGameID,setOpponentName,updateColor,clearMultiplayerDetails,setMultiplayerErrorMessage, readRequestToJoinGameID,clearMultiplayerErrorMessage } from "../apiSlices/chessSlice.js";
 import store from "../reduxstore.js";
+import { io } from "socket.io-client";
 
 //Todo 
 //Create animations of enpassent, queenside castle and kingside castle
+
+//Todo 
+//Implement Computer, Random Match
 export class ChessPieceManager
 {
     convertnotation(fromtype,totype,value1,value2optional)
@@ -90,6 +94,240 @@ export class ChessPieceManager
     {
         this.setfromboardbound(new Chess(),animated);
     }
+    async waitforauthentication()
+    {
+        return new Promise((resolve)=>{
+            this.socket.emit("authenticate",{token:localStorage.getItem("token")});
+            this.socket.on("authenticated",()=>{
+                this.socket.off("authenticated");
+                resolve();
+            });
+        })
+    }
+    async configuresockets()
+    {
+        let backendurl;
+
+        if(import.meta.env.VITE_CURRENT_ENVIRONMENT==="DEV")
+        {
+            backendurl=import.meta.env.VITE_BACKEND_URL_DEV;
+        }
+        else
+        {
+            backendurl=import.meta.env.VITE_BACKEND_URL;
+        }
+
+        this.socket=io(`${backendurl}/chess`);
+        await this.waitforauthenticationbound();
+    }
+    async creatnewgame()
+    {
+        return new Promise((resolve)=>{
+            this.socket.emit("create game",{color:this.currentGameMode.color});
+            this.socket.on("game created",({fen,gameID})=>{
+                store.dispatch(setGameID(gameID));
+                this.gameID=gameID;
+                this.setfromboardbound(new Chess(fen),false);
+                this.socket.off("game created");
+                resolve();
+            })
+        })
+    }
+    async playerjoined()
+    {
+        return new Promise((resolve)=>{
+            this.socket.on("player joined",({opponentname,fen})=>{
+                store.dispatch(setOpponentName(opponentname));
+                this.socket.off("player joined");
+                resolve();
+            })
+        })
+    }
+    async joingame(id)
+    {
+        console.log(id);
+        return new Promise((resolve,reject)=>{
+            if(id=="")
+            {
+                store.dispatch(setMultiplayerErrorMessage("Enter a GameID to Join"));
+                reject("Enter a GameID to Join");
+            }
+            this.socket.emit("join game",{gameID:id});
+            this.socket.on("joined game",({yourcolor,opponentname,fen})=>{
+                store.dispatch(setGameID(id));
+                this.gameID=id;
+                store.dispatch(updateColor(yourcolor));
+                this.setfromboardbound(new Chess(fen),false);
+                this.socket.off("joined game");
+                store.dispatch(setOpponentName(opponentname));
+                resolve(opponentname);
+            })
+            this.socket.on("join game failed",({message})=>{
+                this.socket.off("joined game");
+                this.socket.off("join game failed");
+                store.dispatch(setMultiplayerErrorMessage(message));
+                reject(message);
+            })
+        })
+    }
+    async disconnectsocket()
+    {
+        console.log("called disconnect");
+        let promise= new Promise(resolve=>{
+            this.socket.on("disconnect",()=>{
+                this.socket.off("disconnect");
+                this.socket=null;
+                resolve();
+            });
+        })
+        this.socket.disconnect();
+        return promise;
+        
+    }
+    async endgame(oldgamemode)
+    {
+        if(oldgamemode.singleOrMulti==="Single Player")
+        {
+            if(oldgamemode.singlePlayerMode==="Pass And Play")
+            {
+                this.stoplisteningbound();
+                store.dispatch(endGame());
+            }
+            else if(oldgamemode.singlePlayerMode==="Computer")
+            {
+                //left to implement
+                
+            }
+        }
+        else if(oldgamemode.singleOrMulti==="Multi Player")
+        {
+            if(oldgamemode.multiPlayerMode==="Create Game")
+            {
+                await this.disconnectsocketbound();
+                this.stoplisteningbound();
+                store.dispatch(endGame());
+                store.dispatch(clearMultiplayerDetails());
+            }
+            else if(oldgamemode.multiPlayerMode==="Join Game")
+            {
+                await this.disconnectsocketbound();
+                this.stoplisteningbound();
+                store.dispatch(endGame());
+                store.dispatch(clearMultiplayerDetails());
+            }
+            else if(oldgamemode.multiPlayerMode==="Random Match")
+            {
+                //left to implement
+            }
+        }
+    }
+    async begingame(id)
+    {
+        store.dispatch(clearMultiplayerErrorMessage());
+        if(this.currentGameMode.singleOrMulti==="Single Player")
+        {
+            if(this.currentGameMode.singlePlayerMode==="Pass And Play")
+            {
+                this.setupdefaultboardbound();
+                this.startlisteningbound();
+                store.dispatch(startGame());
+                store.dispatch(clearMultiplayerErrorMessage());
+            }
+            else if(this.currentGameMode.singlePlayerMode==="Computer")
+            {
+                //left to implement
+                
+            }
+        }
+        else if(this.currentGameMode.singleOrMulti==="Multi Player")
+        {
+            if(this.currentGameMode.multiPlayerMode==="Create Game")
+            {
+                await this.configuresocketsbound();
+                await this.creatnewgamebound();
+                await this.playerjoinedbound();
+                this.startlisteningbound();
+                this.socket.on("opponent moved",({from,to,promotion})=>{
+                    
+                    let [fromi,fromj]=this.convertnotationbound(this.notationtypes.chessjsfen,this.notationtypes.local,from);
+                    let [toi,toj]=this.convertnotationbound(this.notationtypes.chessjsfen,this.notationtypes.local,to);
+                    this.movepiecebound(fromi,fromj,toi,toj,promotion);
+                })
+                store.dispatch(startGame());
+                store.dispatch(clearMultiplayerErrorMessage());
+            }
+            else if(this.currentGameMode.multiPlayerMode==="Join Game")
+            {
+                await this.configuresocketsbound();
+                let opponentname;
+                try{
+                    opponentname= await this.joingamebound(id);
+                    console.log("executed");
+                }
+                catch(err)
+                {
+                    console.log("returned");
+                    return;
+                }
+                if(!opponentname)
+                {
+                    console.log("waiting");
+                    await this.playerjoinedbound();
+                }
+                this.startlisteningbound();
+                this.socket.on("opponent moved",({from,to,promotion})=>{
+                    let [fromi,fromj]=this.convertnotationbound(this.notationtypes.chessjsfen,this.notationtypes.local,from);
+                    let [toi,toj]=this.convertnotationbound(this.notationtypes.chessjsfen,this.notationtypes.local,to);
+                    this.movepiecebound(fromi,fromj,toi,toj,promotion);
+                })
+                store.dispatch(startGame());
+                store.dispatch(clearMultiplayerErrorMessage());
+            }
+            else if(this.currentGameMode.multiPlayerMode==="Random Match")
+            {
+                //left to implement
+            }
+        }
+    }
+    gamemodeneedsrestart(gameMode1,gameMode2)
+    {
+        // gameMode:{
+        //     singleOrMulti:"Single Player",
+        //     singlePlayerMode:"Pass And Play",
+        //     multiPlayerMode:"Join Game",
+        //     color:"White"
+        // },
+        if(gameMode1.singleOrMulti!=gameMode2.singleOrMulti)
+        {
+            return true;
+        }
+        if(gameMode1.singleOrMulti=="Single Player")
+        {
+            if(gameMode1.singlePlayerMode!=gameMode2.singlePlayerMode)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        if(gameMode1.singleOrMulti=="Multi Player")
+        {
+            if(gameMode1.multiPlayerMode!=gameMode2.multiPlayerMode)
+            {
+                return true;
+            }
+            if(gameMode1.multiPlayerMode=="Join Game")
+            {
+                return false;
+            }
+            if(gameMode1.color!=gameMode2.color)
+            {
+                return true;
+            }
+        }
+    }
     constructor(originalwhitepieces,originalblackpieces,chessboardinstances,piecetypes,whitebox,blackbox,whiteselectedbox,blackselectedbox,scene)
     {
 
@@ -139,6 +377,15 @@ export class ChessPieceManager
         this.convertnotationbound=this.convertnotation.bind(this);
         this.setfromboardbound=this.setfromboard.bind(this);
         this.setupdefaultboardbound=this.setupdefaultboard.bind(this);
+        this.waitforauthenticationbound=this.waitforauthentication.bind(this);
+        this.configuresocketsbound=this.configuresockets.bind(this);
+        this.creatnewgamebound=this.creatnewgame.bind(this);
+        this.begingamebound=this.begingame.bind(this);
+        this.endgamebound=this.endgame.bind(this);
+        this.playerjoinedbound=this.playerjoined.bind(this);
+        this.joingamebound=this.joingame.bind(this);
+        this.disconnectsocketbound=this.disconnectsocket.bind(this);
+        this.gamemodeneedsrestartbound=this.gamemodeneedsrestart.bind(this);
         this.updatechessboardlocationbound=this.updatechessboardlocation.bind(this);
         this.updatesinglecelllocationwithpiecebound=this.updatesinglecelllocationwithpiece.bind(this);
         this.piecefallanimationanddisposebound=this.piecefallanimationanddispose.bind(this);
@@ -146,6 +393,7 @@ export class ChessPieceManager
         this.removeallpiecesbound=this.removeallpieces.bind(this);
         this.putpiecebound=this.putpiece.bind(this);
         this.startlisteningbound=this.startlistening.bind(this);
+        this.stoplisteningbound=this.stoplistening.bind(this);
         this.getpromotionpiecefromuserbound=this.getpromotionpiecefromuser.bind(this);
         this.movepiecebound=this.movepiece.bind(this);
         this.handletileclickbound=this.handletileclick.bind(this);
@@ -154,7 +402,34 @@ export class ChessPieceManager
         this.unhighlightcellbound=this.unhighlightcell.bind(this);
         this.updateboardselectionturnandstatusbound=this.updateboardselectionturnandstatus.bind(this);
 
-        
+        this.currentGameMode={...store.getState().chess.gameMode};
+        this.unsubscribetostore=store.subscribe(async ()=>{
+            const state=store.getState();
+            const newGameMode=state.chess.gameMode;
+            let oldgamemode={...this.currentGameMode};
+            this.currentGameMode={...newGameMode};
+            const requestid=state.chess.multiplayer.userJoinRequestGameID;
+            console.log("checking",oldgamemode,this.currentGameMode);
+            if(this.gamemodeneedsrestartbound(oldgamemode,this.currentGameMode))
+            {
+                console.log("changed detected");
+                if(state.chess.boardready)
+                {
+                    store.dispatch(readRequestToJoinGameID());
+                    await this.endgamebound(oldgamemode);
+                    await this.begingamebound(requestid);
+                }
+            }
+            else if((this.currentGameMode.singleOrMulti=="Multi Player")&&(this.currentGameMode.multiPlayerMode=="Join Game")&&(state.chess.boardready)&&(requestid))
+            {
+                console.log("message detected",state.chess.multiplayer.userJoinRequestGameID);
+                //join game, game Id changed
+                
+                store.dispatch(readRequestToJoinGameID());
+                await this.endgamebound(oldgamemode);
+                await this.begingamebound(requestid);
+            }
+        })
     }
     updatechessboardlocation()
     {
@@ -263,10 +538,17 @@ export class ChessPieceManager
         })
         
     }
-    async movepiece(fromi,fromj,toi,toj,promotionpiece,animated=true,speed=0.03)
+    async movepiece(fromi,fromj,toi,toj,promotionpiece,checkturnandsend=false,animated=true,speed=0.03)
     {
         if((fromi==toi)&&(fromj==toj)) return;
         if(this.cells[fromi][fromj]==null) return;
+        if(checkturnandsend)
+        {
+            if(!(((this.chessgame.turn()=='w')&&((this.currentGameMode.color=="white")||(this.currentGameMode.color=="White")))||((this.chessgame.turn()=='b')&&((this.currentGameMode.color=="black")||(this.currentGameMode.color=="Black")))))
+            {
+                return;
+            }
+        }
 
         const fromFen=this.convertnotationbound(this.notationtypes.local,this.notationtypes.chessjsfen,fromi,fromj);
         const toFen=this.convertnotationbound(this.notationtypes.local,this.notationtypes.chessjsfen,toi,toj);
@@ -320,6 +602,17 @@ export class ChessPieceManager
                     to: toFen
                 })
             }
+            if(checkturnandsend)
+            {
+                if(promotionpiece)
+                {
+                    this.socket.emit("make move",{from:fromFen,to:toFen,promotion:promotionpiece,gameID:this.gameID});
+                }
+                else
+                {
+                    this.socket.emit("make move",{from:fromFen,to:toFen,gameID:this.gameID});
+                }
+            }
             
             if((move.flags=="e")||(move.flags=="q")||(move.flags=="k"))
             {
@@ -359,9 +652,10 @@ export class ChessPieceManager
         }
         this.scene.registerBeforeRender(moveanimbound);
     }
-    startlistening(scene)
+    startlistening()
     {
-        this.clickobserver= scene.onPointerObservable.add(detechchessboardclick.bind(this));
+        if(this.clickobserver) return;
+        this.clickobserver= this.scene.onPointerObservable.add(detechchessboardclick.bind(this));
         function detechchessboardclick(pointerInfo)
         {      		
             if ((pointerInfo.type==PointerEventTypes.POINTERDOWN)&&(pointerInfo.pickInfo.hit)) {
@@ -389,15 +683,19 @@ export class ChessPieceManager
             }
         }
     }
-    stoplistening(scene)
+    stoplistening()
     {
-        scene.onPointerObservable.remove(this.clickobserver);
+        if(this.clickobserver)
+        {
+            this.scene.onPointerObservable.remove(this.clickobserver);
+        }
+        this.clickobserver=null;
     }
     async handletileclick(i,j)
     {
         if(this.selectedcelli!=null)
         {
-            await this.movepiecebound(this.selectedcelli,this.selectedcellj,i,j);
+            await this.movepiecebound(this.selectedcelli,this.selectedcellj,i,j,null,true);
             this.selectedcelli=null;
             this.selectedcellj=null;
         }
@@ -412,7 +710,7 @@ export class ChessPieceManager
         }
         else
         {
-            await this.movepiecebound(this.selectedcelli,this.selectedcellj,i,j);
+            await this.movepiecebound(this.selectedcelli,this.selectedcellj,i,j,null,true);
             this.selectedcelli=null;
             this.selectedcellj=null;
         }
