@@ -1,24 +1,25 @@
 import { createSlice } from '@reduxjs/toolkit'
 
-// {{const [singleOrMulti,setSingleOrMulti]=useState("Single Player");
-//     //Pass And Play || Computer
-//     const [singlePlayerMode,setSinglePlayerMode]=useState("Pass And Play");
-//     //Create Game || Join Game || Random Match
-//     const [multiPlayerMode,setMultiPlayerMode]=useState("Join Game");
-//     //Black || White
-//     const [color,setColor]=useState("White");}}
 const initialState = {
     gameIsRunning: false,
     currentlyAnimating: false,
     signalToStopAnimation:false,
     signalToGetPromotionPiece:false,
     promotionpiece:null,
-    gamemoMode:{
+    boardready:false,
+    gameMode:{
         singleOrMulti:"Single Player",
         singlePlayerMode:"Pass And Play",
         multiPlayerMode:"Join Game",
         color:"White"
-    }
+    },
+    //for multiplayergames
+    multiplayer:{
+        gameID:null,
+        userJoinRequestGameID:null,
+        opponentname:null,
+        errormessage:null
+    },
 }
 
 export const chessSlice = createSlice({
@@ -65,21 +66,51 @@ export const chessSlice = createSlice({
             state.promotionpiece=null;
         },
         updateSingleOrMulti:(state,action)=>{
-            state.gamemoMode.singleOrMulti=action.payload;
+            state.gameMode.singleOrMulti=action.payload;
         },
         updateSinglePlayerMode:(state,action)=>{
-            state.gamemoMode.singlePlayerMode=action.payload;
+            state.gameMode.singlePlayerMode=action.payload;
         },
         updateMultiPlayerMode:(state,action)=>{
-            state.gamemoMode.multiPlayerMode=action.payload;
+            state.gameMode.multiPlayerMode=action.payload;
         },
         updateColor:(state,action)=>{
-            state.gamemoMode.color=action.payload;
+            state.gameMode.color=action.payload;
+        },
+        setGameID:(state,action)=>{
+            state.multiplayer.gameID=action.payload;
+        },
+        setOpponentName:(state,action)=>{
+            state.multiplayer.opponentname=action.payload;
+        },
+        clearMultiplayerDetails:(state)=>{
+            state.multiplayer.opponentname=null;
+            state.multiplayer.gameID=null;
+            state.multiplayer.userJoinRequestGameID=null;
+            state.errormessage=null;
+        },
+        setMultiplayerErrorMessage:(state,action)=>{
+            state.multiplayer.errormessage=action.payload;
+        },
+        sendRequestToJoinGameID:(state,action)=>{
+            state.multiplayer.userJoinRequestGameID=action.payload;
+        },
+        readRequestToJoinGameID:(state)=>{
+            state.multiplayer.userJoinRequestGameID=null;
+        },
+        clearMultiplayerErrorMessage:(state)=>{
+            state.multiplayer.errormessage=null;
+        },
+        boardisReady:(state)=>{
+            state.boardready=true;
+        },
+        boardisnotReady:(state)=>{
+            state.boardready=false;
         }
     },
 })
 
 
-export const { startGame,endGame,startAnimation,endAnimation,sendStopAnimationSignal,sendSignalToGetPromotionPiece,setPromotionPiece,readThePromotionPiece,updateSingleOrMulti,updateSinglePlayerMode,updateMultiPlayerMode,updateColor} = chessSlice.actions;
+export const { startGame,endGame,startAnimation,endAnimation,sendStopAnimationSignal,sendSignalToGetPromotionPiece,setPromotionPiece,readThePromotionPiece,updateSingleOrMulti,updateSinglePlayerMode,updateMultiPlayerMode,updateColor,setGameID,setOpponentName,clearMultiplayerDetails,setMultiplayerErrorMessage,sendRequestToJoinGameID,readRequestToJoinGameID,clearMultiplayerErrorMessage,boardisReady,boardisnotReady} = chessSlice.actions;
 
 export default chessSlice.reducer;
