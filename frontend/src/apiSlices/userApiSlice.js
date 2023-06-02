@@ -12,7 +12,7 @@ else
 }
 //extract this to env file
 const baseQuery=fetchBaseQuery({ 
-    baseUrl: backendurl,
+    baseUrl: `${backendurl}/api/users`,
     prepareHeaders: (headers) => {
         const token = localStorage.getItem("token");
     
