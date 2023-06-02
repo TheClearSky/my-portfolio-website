@@ -23,13 +23,13 @@ else
 {
     frontendurl=process.env.FRONTEND_URL_DEV;
 }
-
-app.use(cors({
+let corssettings={
     origin:[frontendurl],
     methods:"GET, POST, PUT, DELETE, UPDATE",
     allowedHeaders:"Origin, X-Requested-With, Content-Type, Accept, Authorization",
     credentials:true,
-}));
+};
+app.use(cors(corssettings));
 
 
 app.use(express.json());
@@ -45,7 +45,9 @@ app.use(errorHandler);
 
 const httpServer = app.listen(port,()=>console.log(`Server started at port ${port}`));
 
-const io = new Server(httpServer);
+const io = new Server(httpServer,{
+    cors:corssettings
+});
 
 io.of("/chess").on('connection', handleChessConnection);
 export {io};
