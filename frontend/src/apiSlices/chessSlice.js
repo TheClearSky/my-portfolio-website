@@ -17,6 +17,7 @@ const initialState = {
     multiplayer:{
         gameID:null,
         userJoinRequestGameID:null,
+        joinRequestSignal:false,
         opponentname:null,
         errormessage:null
     },
@@ -86,17 +87,17 @@ export const chessSlice = createSlice({
         clearMultiplayerDetails:(state)=>{
             state.multiplayer.opponentname=null;
             state.multiplayer.gameID=null;
-            state.multiplayer.userJoinRequestGameID=null;
-            state.errormessage=null;
+            state.multiplayer.errormessage=null;
         },
         setMultiplayerErrorMessage:(state,action)=>{
             state.multiplayer.errormessage=action.payload;
         },
         sendRequestToJoinGameID:(state,action)=>{
+            state.multiplayer.joinRequestSignal=true;
             state.multiplayer.userJoinRequestGameID=action.payload;
         },
         readRequestToJoinGameID:(state)=>{
-            state.multiplayer.userJoinRequestGameID=null;
+            state.multiplayer.joinRequestSignal=false;
         },
         clearMultiplayerErrorMessage:(state)=>{
             state.multiplayer.errormessage=null;

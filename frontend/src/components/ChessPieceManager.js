@@ -143,9 +143,9 @@ export class ChessPieceManager
             })
         })
     }
-    async joingame(id)
+    async joingame()
     {
-        console.log(id);
+        let id=store.getState().chess.multiplayer.userJoinRequestGameID;
         return new Promise((resolve,reject)=>{
             if(id=="")
             {
@@ -172,6 +172,7 @@ export class ChessPieceManager
     }
     async disconnectsocket()
     {
+        if(!this.socket) return;
         console.log("called disconnect");
         let promise= new Promise(resolve=>{
             this.socket.on("disconnect",()=>{
@@ -221,7 +222,7 @@ export class ChessPieceManager
             }
         }
     }
-    async begingame(id)
+    async begingame()
     {
         store.dispatch(clearMultiplayerErrorMessage());
         if(this.currentGameMode.singleOrMulti==="Single Player")
@@ -261,7 +262,7 @@ export class ChessPieceManager
                 await this.configuresocketsbound();
                 let opponentname;
                 try{
-                    opponentname= await this.joingamebound(id);
+                    opponentname= await this.joingamebound();
                     console.log("executed");
                 }
                 catch(err)
@@ -409,6 +410,7 @@ export class ChessPieceManager
             let oldgamemode={...this.currentGameMode};
             this.currentGameMode={...newGameMode};
             const requestid=state.chess.multiplayer.userJoinRequestGameID;
+            console.log("requestid original is:",requestid);
             console.log("checking",oldgamemode,this.currentGameMode);
             if(this.gamemodeneedsrestartbound(oldgamemode,this.currentGameMode))
             {
@@ -417,17 +419,17 @@ export class ChessPieceManager
                 {
                     store.dispatch(readRequestToJoinGameID());
                     await this.endgamebound(oldgamemode);
-                    await this.begingamebound(requestid);
+                    await this.begingamebound();
                 }
             }
-            else if((this.currentGameMode.singleOrMulti=="Multi Player")&&(this.currentGameMode.multiPlayerMode=="Join Game")&&(state.chess.boardready)&&(requestid))
+            else if((this.currentGameMode.singleOrMulti=="Multi Player")&&(this.currentGameMode.multiPlayerMode=="Join Game")&&(state.chess.boardready)&&(state.chess.multiplayer.joinRequestSignal))
             {
                 console.log("message detected",state.chess.multiplayer.userJoinRequestGameID);
                 //join game, game Id changed
                 
                 store.dispatch(readRequestToJoinGameID());
                 await this.endgamebound(oldgamemode);
-                await this.begingamebound(requestid);
+                await this.begingamebound();
             }
         })
     }
