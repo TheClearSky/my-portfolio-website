@@ -1,0 +1,12 @@
+.tomessage{
+    font-size: 0.9rem;
+    line-height: 1;
+    text-align: right;
+    border-radius: 20px 20px 0px 20px;
+    background-color: rgba(15, 97, 111, 0.321);
+    width: fit-content;
+    padding: 0.3em 0.5em;
+    align-self: flex-end;
+    text-align: left;
+    margin-left:1em;
+}

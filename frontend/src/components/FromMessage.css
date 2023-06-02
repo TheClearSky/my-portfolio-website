@@ -1,0 +1,11 @@
+.frommessage{
+    font-size: 0.9rem;
+    line-height: 1;
+    align-self: flex-start;
+    border-radius: 20px 20px 20px 0px;
+    background-color: rgba(0, 0, 0, 0.375);
+    width: fit-content;
+    padding: 0.3em 0.5em;
+    text-align: left;
+    margin-right:1em;
+}

@@ -1,0 +1,32 @@
+.chessmatchinfo{
+    padding: 0.5em;
+    margin-bottom: 0.5em;
+    display: flex;
+    flex-direction: column;
+}
+.chessmatchinfo .player{
+    font-size: 1.5rem;
+    text-shadow: rgb(176, 203, 255) 0px 0 0.2em;
+    margin-inline: 0.5em;
+    line-height: 0.6;
+}
+
+
+.chatbox{
+    background-color: rgba(137, 79, 184, 0.104);
+}
+.chatboxtitle{
+    font-size: 1.5rem;
+    padding-block:0.2em;
+    text-decoration: underline;
+}
+.chatboxmessages{
+    min-height: 25px;
+    max-height: 200px;
+    max-width: 300px;
+    padding-inline: 0.5em;
+    display: flex;
+    flex-direction: column;
+    gap:0.5em;
+    overflow-y: scroll;
+}
