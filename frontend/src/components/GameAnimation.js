@@ -1,7 +1,7 @@
 
 import { Vector3,Tools } from "@babylonjs/core";
 import {clearcameraconstraints,setchesscameraconstraints,setdefaultcameraconstraints,setdefaultcamera,setinitialtransformsofchessboard,setinitialtransformsoftree } from './SceneManager.js';
-import { startAnimation,endAnimation,startGame,endGame } from "../apiSlices/chessSlice.js";
+import { startAnimation,endAnimation, boardisReady, boardisnotReady } from "../apiSlices/chessSlice.js";
 import store from "../reduxstore.js";
 
 // Todo
@@ -123,11 +123,11 @@ export class gameAnimations
                 this.camera.attachControl(null);
                 this.chesspiecemanager.updatechessboardlocation();
                 
-                this.chesspiecemanager.startlistening(this.scene);
+                store.dispatch(boardisReady());
+                this.chesspiecemanager.begingamebound();
                 this.startAnimationStage=0;
                 this.startAnimationIsPlaying=false;
                 store.dispatch(endAnimation());
-                store.dispatch(startGame());
                 break;
         }
     }
@@ -321,7 +321,8 @@ export class gameAnimations
                 this.endAnimationIsPlaying=true;
                 store.dispatch(startAnimation());
                 this.initEndAnimations();
-                this.chesspiecemanager.stoplistening(this.scene);
+                this.chesspiecemanager.endgamebound();
+                store.dispatch(boardisnotReady());
                 clearcameraconstraints(this.camera);
                 this.camera.target=Vector3.Zero();
                 this.scene.registerBeforeRender(this.chessboardEndFallbound);
@@ -341,7 +342,6 @@ export class gameAnimations
                 this.endAnimationStage=0;
                 this.endAnimationIsPlaying=false;
                 store.dispatch(endAnimation());
-                store.dispatch(endGame());
                 break;
         }
     }
@@ -399,9 +399,9 @@ export class gameAnimations
             this.chesspiecemanager.setupdefaultboardbound(false);
             this.camera.attachControl(null);
             this.chesspiecemanager.updatechessboardlocation();
-            this.chesspiecemanager.startlistening(this.scene);
+            store.dispatch(boardisReady());
+            this.chesspiecemanager.begingamebound();
             store.dispatch(endAnimation());
-            store.dispatch(startGame());
         }
         else if(this.endAnimationIsPlaying)
         {
@@ -409,9 +409,9 @@ export class gameAnimations
             this.endAnimationIsPlaying=false;
             //unregistering all functons
             this.scene.unregisterBeforeRender(this.chessboardEndFallbound);
-
+            this.chesspiecemanager.endgamebound();
+            store.dispatch(boardisnotReady());
             this.chesspiecemanager.removeallpiecesbound();
-            this.chesspiecemanager.stoplistening(this.scene);
             setdefaultcameraconstraints(this.camera);
             setdefaultcamera(this.camera);
             setinitialtransformsoftree(this.canopy,this.trunk);
@@ -419,7 +419,6 @@ export class gameAnimations
             this.canopy.isVisible=true;
             this.trunk.isVisible=true;
             store.dispatch(endAnimation());
-            store.dispatch(endGame());
         }
     }
 }
