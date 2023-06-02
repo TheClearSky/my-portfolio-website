@@ -1,0 +1,15 @@
+.chessinfopickmenu{
+    display: flex;
+    gap:1em;
+    margin-inline: auto;
+    justify-content: center;
+    margin-block: 0.3em;
+}
+.chessinfopickmenu > span{
+    padding-inline: 0.5em;
+    cursor: pointer;
+}
+.chessinfopickmenu .activepick{
+    text-shadow: rgb(255, 255, 255) 0px 0 0.5em;
+    border: 2px solid white;
+}

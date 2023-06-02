@@ -1,0 +1,45 @@
+.chessinfobox{
+    font-family: Mufanpfs;
+    color: white;
+    text-align: center;
+    padding: 0.5em 0.5em;
+    font-size: 1rem;
+    min-width: 225px;
+}
+.gameidbox{
+    padding: 0.35em 0.35em;
+    margin: 0.35em 0.35em;
+    background-color: rgba(216, 212, 225, 0.119);
+}
+.gameid{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    letter-spacing: 0.2em;
+}
+.gameid >img{
+    width: 1.8em;
+    height: 1.8em;
+}
+.entergameidbox{
+    padding: 0.35em 0.35em;
+    margin: 0.35em 0.35em;
+    background-color: rgba(216, 212, 225, 0.119);
+}
+.gameidinput{
+    font-family: Mufanpfs;
+    border: 1px solid white;
+    font-size: 1rem;
+    background-color: rgba(11, 28, 60, 0.359);
+    color: rgb(222, 226, 234);
+    padding: 0.2em 0.2em;
+    letter-spacing: 0.08em;
+}
+.entergameidbox > button{
+    background-color: rgba(240, 248, 255, 0.442);
+    border: 0px;
+    font-size: 1rem;
+    font-family: Mufanpfs;
+    padding: 0.2em 0.2em;
+    border: 1px solid white;
+}
