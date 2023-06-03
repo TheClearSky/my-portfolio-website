@@ -411,7 +411,7 @@ export class ChessPieceManager
             const newGameMode=state.chess.gameMode;
             let oldgamemode={...this.currentGameMode};
             this.currentGameMode={...newGameMode};
-            const requestid=state.chess.multiplayer.userJoinRequestGameID;
+            
             if((oldgamemode.color.toLowerCase()!=this.currentGameMode.color.toLowerCase())&&(state.chess.boardready))
             {
                 

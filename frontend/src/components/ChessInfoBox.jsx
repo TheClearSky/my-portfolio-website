@@ -81,7 +81,7 @@ export default function ChessInfoBox() {
 
             {(singleOrMulti==="Multi Player")&&
             <>
-                <MultiplayerChatBox player1={profileData.name} player2={multiplayerDetails.opponentname}>
+                <MultiplayerChatBox player1={profileData?.name} player2={multiplayerDetails.opponentname}>
                     <FromMessage>In development</FromMessage>
                     <ToMessage>Coming Soon</ToMessage>
                 </MultiplayerChatBox>
