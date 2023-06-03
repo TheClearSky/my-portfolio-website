@@ -1,7 +1,7 @@
 import { Vector3,Tools } from "@babylonjs/core";
 import {PointerEventTypes} from '@babylonjs/core';
 import { Chess } from 'chess.js';
-import { sendSignalToGetPromotionPiece,readThePromotionPiece,startGame,endGame,setGameID,setOpponentName,updateColor,clearMultiplayerDetails,setMultiplayerErrorMessage, readRequestToJoinGameID,clearMultiplayerErrorMessage } from "../apiSlices/chessSlice.js";
+import { sendSignalToGetPromotionPiece,readThePromotionPiece,startGame,endGame,setGameID,setOpponentName,updateColor,clearMultiplayerDetails,setMultiplayerErrorMessage, readRequestToJoinGameID,clearMultiplayerErrorMessage, sendRequestToJoinGameID, updateMultiPlayerMode } from "../apiSlices/chessSlice.js";
 import store from "../reduxstore.js";
 import { io } from "socket.io-client";
 
@@ -88,7 +88,6 @@ export class ChessPieceManager
                 }
             }
         }
-        this.turn=game.turn();
     }
     setupdefaultboard(animated=true)
     {
@@ -118,6 +117,13 @@ export class ChessPieceManager
         }
 
         this.socket=io(`${backendurl}/chess`);
+        this.socket.on("disconnect",()=>{
+            this.socket.off("disconnect");
+            this.socket=null;
+            store.dispatch(setMultiplayerErrorMessage("Disconnected, trying to rejoin"));
+            store.dispatch(sendRequestToJoinGameID(store.getState().chess.multiplayer.gameID));
+            store.dispatch(updateMultiPlayerMode("Join Game"));
+        });
         await this.waitforauthenticationbound();
     }
     async creatnewgame()
@@ -173,6 +179,7 @@ export class ChessPieceManager
     async disconnectsocket()
     {
         if(!this.socket) return;
+        this.socket.off("disconnect");
         let promise= new Promise(resolve=>{
             this.socket.on("disconnect",()=>{
                 this.socket.off("disconnect");
@@ -227,7 +234,6 @@ export class ChessPieceManager
     }
     async begingame()
     {
-        
         store.dispatch(clearMultiplayerErrorMessage());
         if(this.currentGameMode.singleOrMulti==="Single Player")
         {
@@ -343,6 +349,8 @@ export class ChessPieceManager
         this.blackselectedbox=blackselectedbox;
         this.scene=scene;
         this.camera=camera;
+        this.acktimeoutinms=10000;
+        this.maxretry=10;
         this.cells=[];
         this.fallvoidy=-50;
 
@@ -374,7 +382,6 @@ export class ChessPieceManager
             chessjscoordinates:1,
             chessjsfen:2
         }
-        this.turn="w";
         this.highlightedcells=[];
 
         this.convertnotationbound=this.convertnotation.bind(this);
@@ -398,6 +405,8 @@ export class ChessPieceManager
         this.startlisteningbound=this.startlistening.bind(this);
         this.stoplisteningbound=this.stoplistening.bind(this);
         this.getpromotionpiecefromuserbound=this.getpromotionpiecefromuser.bind(this);
+        this.sendmovebound=this.sendmove.bind(this);
+        this.sendmoveandretrybound=this.sendmoveandretry.bind(this);
         this.movepiecebound=this.movepiece.bind(this);
         this.handletileclickbound=this.handletileclick.bind(this);
         this.handlepiececlickbound=this.handlepiececlick.bind(this);
@@ -553,6 +562,63 @@ export class ChessPieceManager
         })
         
     }
+    async sendmove(fromFen,toFen,promotionpiece)
+    {
+        return new Promise((resolve,reject)=>{
+            if(promotionpiece)
+            {
+                this.socket.timeout(this.acktimeoutinms).emit("make move",{from:fromFen,to:toFen,promotion:promotionpiece,gameID:this.gameID},(err)=>{
+                    if(err)
+                    {
+                        store.dispatch(setMultiplayerErrorMessage("Slow connection, retrying..."));
+                        reject();
+                    }
+                    else
+                    {
+                        resolve();
+                    }
+                });
+            }
+            else
+            {
+                this.socket.timeout(this.acktimeoutinms).emit("make move",{from:fromFen,to:toFen,gameID:this.gameID},(err)=>{
+                    if(err)
+                    {
+                        store.dispatch(setMultiplayerErrorMessage("Slow connection, retrying..."));
+                        reject();
+                    }
+                    else
+                    {
+                        resolve();
+                    }
+                });
+            }
+        })
+    }
+    async sendmoveandretry(fromFen,toFen,promotionpiece)
+    {
+        let i;
+        for(i=0;i<this.maxretry;++i)
+        {
+            try{
+                await this.sendmovebound(fromFen,toFen,promotionpiece);
+                store.dispatch(clearMultiplayerErrorMessage());
+                break;
+            }
+            catch(err)
+            {
+
+            }
+        }
+        if(i==this.maxretry)
+        {
+            store.dispatch(setMultiplayerErrorMessage("Something went wrong, please copy gameID to rejoin(restarting in 10s...)"));
+            setTimeout(async () => {
+                await this.endgamebound();
+                await this.begingamebound();
+            }, 10000);
+        }
+    }
     async movepiece(fromi,fromj,toi,toj,promotionpiece,checkturnandsend=false,flipboard=false,animated=true,speed=0.03)
     {
         if((fromi==toi)&&(fromj==toj)) return;
@@ -619,14 +685,7 @@ export class ChessPieceManager
             }
             if(checkturnandsend)
             {
-                if(promotionpiece)
-                {
-                    this.socket.emit("make move",{from:fromFen,to:toFen,promotion:promotionpiece,gameID:this.gameID});
-                }
-                else
-                {
-                    this.socket.emit("make move",{from:fromFen,to:toFen,gameID:this.gameID});
-                }
+                this.sendmoveandretrybound(fromFen,toFen,promotionpiece);
             }
             if(flipboard)
             {

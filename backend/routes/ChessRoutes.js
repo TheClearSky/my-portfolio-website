@@ -118,7 +118,7 @@ export function handleChessConnection(socket) {
             });
         }
     })
-    socket.on("make move",async ({from,to,promotion,gameID})=>
+    socket.on("make move",async ({from,to,promotion,gameID},ack)=>
     {
         if(!socket.chessuser)
         {
@@ -162,10 +162,11 @@ export function handleChessConnection(socket) {
                         socket.broadcast.to(chessgame.whiteplayersocketID).emit("opponent moved",{from,to});
                     }
                 }
+                ack("successful");
             }
             catch(err)
             {
-                socket.emit("invalid move",{})
+                ack("invalid move");
                 return;
             }
         }
