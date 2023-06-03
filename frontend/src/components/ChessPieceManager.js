@@ -227,17 +227,7 @@ export class ChessPieceManager
     }
     async begingame()
     {
-        if((this.currentGameMode.color=="black")||(this.currentGameMode.color=="Black"))
-        {
-            //for black
-            this.camera.target=new Vector3(0,0,-2.4);
-            this.camera.alpha=Tools.ToRadians(90);
-        }
-        else
-        {
-            this.camera.target=new Vector3(0,0,2.4);
-            this.camera.alpha=Tools.ToRadians(-90);
-        }
+        
         store.dispatch(clearMultiplayerErrorMessage());
         if(this.currentGameMode.singleOrMulti==="Single Player")
         {
@@ -422,6 +412,21 @@ export class ChessPieceManager
             let oldgamemode={...this.currentGameMode};
             this.currentGameMode={...newGameMode};
             const requestid=state.chess.multiplayer.userJoinRequestGameID;
+            if((oldgamemode.color.toLowerCase()!=this.currentGameMode.color.toLowerCase())&&(state.chess.boardready))
+            {
+                
+                this.camera.target=new Vector3(0,0,-this.camera.target.z);
+                if((this.currentGameMode.color=="black")||(this.currentGameMode.color=="Black"))
+                {
+                    //for black
+                    this.camera.alpha=Tools.ToRadians(90);
+                }
+                else
+                {
+                    this.camera.alpha=Tools.ToRadians(-90);
+                }
+                this.camera.beta=Tools.ToRadians(65);
+            }
             if(this.gamemodeneedsrestartbound(oldgamemode,this.currentGameMode))
             {
                 if(state.chess.boardready)
@@ -703,9 +708,18 @@ export class ChessPieceManager
     }
     async handletileclick(i,j)
     {
+        let checkturnandsend;
+        if(this.currentGameMode.singleOrMulti=="Single Player")
+        {
+            checkturnandsend=false;
+        }
+        else
+        {
+            checkturnandsend=true;
+        }
         if(this.selectedcelli!=null)
         {
-            await this.movepiecebound(this.selectedcelli,this.selectedcellj,i,j,null,true);
+            await this.movepiecebound(this.selectedcelli,this.selectedcellj,i,j,null,checkturnandsend);
             this.selectedcelli=null;
             this.selectedcellj=null;
         }
@@ -713,6 +727,15 @@ export class ChessPieceManager
     }
     async handlepiececlick(i,j)
     {
+        let checkturnandsend;
+        if(this.currentGameMode.singleOrMulti=="Single Player")
+        {
+            checkturnandsend=false;
+        }
+        else
+        {
+            checkturnandsend=true;
+        }
         if(this.selectedcelli==null)
         {
             this.selectedcelli=i;
@@ -720,7 +743,7 @@ export class ChessPieceManager
         }
         else
         {
-            await this.movepiecebound(this.selectedcelli,this.selectedcellj,i,j,null,true);
+            await this.movepiecebound(this.selectedcelli,this.selectedcellj,i,j,null,checkturnandsend);
             this.selectedcelli=null;
             this.selectedcellj=null;
         }
