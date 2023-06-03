@@ -204,10 +204,11 @@ export function handleChessConnection(socket) {
                         socket.broadcast.to(chessgame.blackplayersocketID).emit("opponent moved",{from,to});
                     }
                 }
+                ack("successful");
             }
             catch(err)
             {
-                socket.emit("invalid move",{})
+                ack("invalid move");
                 return;
             }
         }
