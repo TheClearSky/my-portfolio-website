@@ -612,10 +612,10 @@ export class ChessPieceManager
         }
         if(i==this.maxretry)
         {
-            store.dispatch(setMultiplayerErrorMessage("Something went wrong, please copy gameID to rejoin(restarting in 10s...)"));
+            store.dispatch(setMultiplayerErrorMessage("Something went wrong, please copy gameID to rejoin(automatically trying in 10s...)"));
             setTimeout(async () => {
-                await this.endgamebound();
-                await this.begingamebound();
+                store.dispatch(sendRequestToJoinGameID(store.getState().chess.multiplayer.gameID));
+                store.dispatch(updateMultiPlayerMode("Join Game"));
             }, 10000);
         }
     }
