@@ -553,7 +553,7 @@ export class ChessPieceManager
         })
         
     }
-    async movepiece(fromi,fromj,toi,toj,promotionpiece,checkturnandsend=false,animated=true,speed=0.03)
+    async movepiece(fromi,fromj,toi,toj,promotionpiece,checkturnandsend=false,flipboard=false,animated=true,speed=0.03)
     {
         if((fromi==toi)&&(fromj==toj)) return;
         if(this.cells[fromi][fromj]==null) return;
@@ -626,6 +626,17 @@ export class ChessPieceManager
                 else
                 {
                     this.socket.emit("make move",{from:fromFen,to:toFen,gameID:this.gameID});
+                }
+            }
+            if(flipboard)
+            {
+                if(this.currentGameMode.color.toLowerCase()=="black")
+                {
+                    store.dispatch(updateColor("White"));
+                }
+                else
+                {
+                    store.dispatch(updateColor("Black"));
                 }
             }
             
@@ -717,9 +728,18 @@ export class ChessPieceManager
         {
             checkturnandsend=true;
         }
+        let flipboard;
+        if((this.currentGameMode.singleOrMulti=="Single Player")&&(this.currentGameMode.singlePlayerMode=="Pass And Play"))
+        {
+            flipboard=true;
+        }
+        else
+        {
+            flipboard=false;
+        }
         if(this.selectedcelli!=null)
         {
-            await this.movepiecebound(this.selectedcelli,this.selectedcellj,i,j,null,checkturnandsend);
+            await this.movepiecebound(this.selectedcelli,this.selectedcellj,i,j,null,checkturnandsend,flipboard);
             this.selectedcelli=null;
             this.selectedcellj=null;
         }
@@ -736,6 +756,15 @@ export class ChessPieceManager
         {
             checkturnandsend=true;
         }
+        let flipboard;
+        if((this.currentGameMode.singleOrMulti=="Single Player")&&(this.currentGameMode.singlePlayerMode=="Pass And Play"))
+        {
+            flipboard=true;
+        }
+        else
+        {
+            flipboard=false;
+        }
         if(this.selectedcelli==null)
         {
             this.selectedcelli=i;
@@ -743,7 +772,7 @@ export class ChessPieceManager
         }
         else
         {
-            await this.movepiecebound(this.selectedcelli,this.selectedcellj,i,j,null,checkturnandsend);
+            await this.movepiecebound(this.selectedcelli,this.selectedcellj,i,j,null,checkturnandsend,flipboard);
             this.selectedcelli=null;
             this.selectedcellj=null;
         }
