@@ -14,6 +14,11 @@ const iconpaths={
     link:"/icons/linkicon.svg",
     nodejs:"/icons/nodejsicon.svg",
     mongodb:"/icons/mongodbicon.svg",
-    expressjs:"/icons/expressjsicon.svg"
+    expressjs:"/icons/expressjsicon.svg",
+    redux:"/icons/reduxicon.svg",
+    render:"/icons/rendericon.svg",
+    blender:"/icons/blendericon.svg",
+    figma:"/icons/figmaicon.svg",
+    photoshop:"/icons/photoshopicon.svg"
 }
 export default iconpaths;
