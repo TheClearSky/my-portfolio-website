@@ -2,6 +2,16 @@
     width:100%;
     max-width: 15em;
     margin-inline: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+.skilltechicon{
+    display: inline;
+    width: 1.5em;
+    margin-top: 0em;
+    max-height: 2em;
+    margin-bottom: 0.1em;
 }
 .skillsectionname{
     font-family: Mufanpfs;
@@ -9,6 +19,9 @@
     font-size: 1.4rem;
     letter-spacing: 0.06em;
     text-shadow: rgb(142, 154, 178) 0px 0 0.13em;
+    display: flex;
+    align-items: flex-end;
+    gap: 0.5em;
 }
 .skillsectionbarbackground{
     background-color: rgba(255, 255, 255, 0.095);
