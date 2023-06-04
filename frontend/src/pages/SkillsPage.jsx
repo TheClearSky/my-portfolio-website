@@ -5,26 +5,29 @@ import "./SkillsPage.css";
 export default function SkillsPage() {
     let delaybetweenbarsinseconds=0.15;
     let developmentskilllist=[
-        { skillname:"HTML",         skillpercentage:100 },
-        { skillname:"CSS",          skillpercentage:100 },
-        { skillname:"Javascript",   skillpercentage:100 },
-        { skillname:"React",        skillpercentage:95 },
-        { skillname:"React Router", skillpercentage:90 },
-        { skillname:"Vite",         skillpercentage:90 },
-        { skillname:"Babylon Js",   skillpercentage:100 },
-        { skillname:"Konva Js",     skillpercentage:100 },
-        { skillname:"Node Js",     skillpercentage:100 },
-        { skillname:"Express",     skillpercentage:80 }
+        { skillname:"HTML",        iconname:"html",         skillpercentage:100 },
+        { skillname:"CSS",         iconname:"css",          skillpercentage:100 },
+        { skillname:"Javascript",  iconname:"javascript",   skillpercentage:100 },
+        { skillname:"React",       iconname:"react",        skillpercentage:95 },
+        { skillname:"React Router",iconname:"reactrouter",  skillpercentage:90 },
+        { skillname:"Redux and RTK",iconname:"redux",       skillpercentage:90 },
+        { skillname:"Vite",        iconname:"vite",         skillpercentage:90 },
+        { skillname:"Babylon Js",  iconname:"babylonjs",    skillpercentage:100 },
+        { skillname:"Konva Js",    iconname:"konva",        skillpercentage:100 },
+        { skillname:"Node Js",     iconname:"nodejs",       skillpercentage:100 },
+        { skillname:"Express",     iconname:"expressjs",    skillpercentage:95 },
+        { skillname:"MongoDB",     iconname:"mongodb",      skillpercentage:80 }
     ]
     let deploymentskilllist=[
-        { skillname:"Firebase Hosting",         skillpercentage:100 },
-        { skillname:"Firebase Authentication",  skillpercentage:100 },
-        { skillname:"Firebase Firestore",       skillpercentage:100 },
+        { skillname:"Firebase Hosting",         iconname:"firebase",    skillpercentage:100 },
+        { skillname:"Firebase Authentication",  iconname:"firebase",    skillpercentage:100 },
+        { skillname:"Firebase Firestore",       iconname:"firebase",    skillpercentage:100 },
+        { skillname:"Render",                   iconname:"render",      skillpercentage:100 }
     ]
     let creativedesignskilllist=[
-        { skillname:"Blender",          skillpercentage:95 },
-        { skillname:"Figma",            skillpercentage:95 },
-        { skillname:"Adobe Photoshop",  skillpercentage:50 },
+        { skillname:"Blender",          iconname:"blender",     skillpercentage:95 },
+        { skillname:"Figma",            iconname:"figma",       skillpercentage:95 },
+        { skillname:"Adobe Photoshop",  iconname:"photoshop",   skillpercentage:50 },
     ]
     return (
         <>
@@ -35,6 +38,7 @@ export default function SkillsPage() {
                     key={skill["skillname"]} 
                     name={skill["skillname"]} 
                     percentage={skill["skillpercentage"]} 
+                    iconname={skill["iconname"]}
                     animationdelay={`${delaybetweenbarsinseconds*(index+1)}s`}
                 />)}
             </div>
@@ -45,6 +49,7 @@ export default function SkillsPage() {
                     key={skill["skillname"]} 
                     name={skill["skillname"]} 
                     percentage={skill["skillpercentage"]} 
+                    iconname={skill["iconname"]}
                     animationdelay={`${delaybetweenbarsinseconds*(developmentskilllist.length + index+1)}s`}
                 />)}
             </div>
@@ -55,6 +60,7 @@ export default function SkillsPage() {
                     key={skill["skillname"]} 
                     name={skill["skillname"]} 
                     percentage={skill["skillpercentage"]} 
+                    iconname={skill["iconname"]}
                     animationdelay={`${delaybetweenbarsinseconds*(developmentskilllist.length + deploymentskilllist.length + index+1)}s`}
                 />)}
             </div>

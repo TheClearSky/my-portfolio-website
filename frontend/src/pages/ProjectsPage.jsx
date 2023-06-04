@@ -10,10 +10,10 @@ export default function ProjectsPage() {
         <ProjectSection
             newCategoryTitle={"Solo Projects"} 
             title={"My Portfolio Website ( This website ) [Stack:MERN]"}
-            iconnamelist={["html","css","javascript","mongodb","expressjs","react","nodejs","reactrouter","vite","babylonjs","firebase"]}
+            iconnamelist={["html","css","javascript","mongodb","expressjs","react","nodejs","reactrouter","redux","vite","babylonjs","firebase","render"]}
             githublink={"https://github.com/TheClearSky/my-portfolio-website"}
         >
-            A website displaying my portfolio, uses the latest 3d WebGL and WebGPU graphics using Babylon Js to build an awesome experience. Includes a live 3d scene and a chess game.
+            A website displaying my portfolio, uses the latest 3d WebGL and WebGPU graphics using Babylon Js to build an awesome experience. Includes a live 3d scene and a chess game. Uses MERN stack for frontend, hosted on firebase(frontend) and render(backend)
         </ProjectSection>
         <ProjectSection 
             title={"A* Algorithm Vizualization"} 
