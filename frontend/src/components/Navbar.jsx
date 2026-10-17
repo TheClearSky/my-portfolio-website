@@ -53,7 +53,6 @@ export default function Navbar() {
                 <div className="navbuttons">
                     <NavLink  className="navbutton" onClick={()=>setOpenedMenu(false)} to="/">Home</NavLink>
                     <NavLink  className="navbutton" onClick={()=>setOpenedMenu(false)} to="/projects" >Projects</NavLink>
-                    <NavLink  className="navbutton" onClick={()=>setOpenedMenu(false)} to="/skills" >Skills</NavLink>
                     <NavLink  className="navbutton" onClick={()=>setOpenedMenu(false)} to="/contact" >Contact</NavLink>
                     {/* <NavLink  className="navbutton" onClick={()=>setOpenedMenu(false)} to="/theme" >Theme</NavLink> */}
                 </div>

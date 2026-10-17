@@ -1,0 +1,26 @@
+.overlayscrollbar {
+    right: 3px;
+    width: 6px;
+    border-radius: 3px;
+    background: rgba(187, 196, 230, 0.45);
+    opacity: 0;
+    transition: opacity 0.35s ease, width 0.15s ease, background-color 0.15s ease;
+    z-index: 50;
+    touch-action: none;
+    cursor: pointer;
+}
+.overlayscrollbar.onpage {
+    position: fixed;
+}
+.overlayscrollbar.inbox {
+    position: absolute;
+}
+.overlayscrollbar.active,
+.overlayscrollbar:hover {
+    opacity: 1;
+}
+.overlayscrollbar:hover,
+.overlayscrollbar:active {
+    width: 9px;
+    background: rgba(214, 222, 255, 0.7);
+}

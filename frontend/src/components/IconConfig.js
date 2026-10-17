@@ -19,6 +19,9 @@ const iconpaths={
     render:"/icons/rendericon.svg",
     blender:"/icons/blendericon.svg",
     figma:"/icons/figmaicon.svg",
-    photoshop:"/icons/photoshopicon.svg"
+    photoshop:"/icons/photoshopicon.svg",
+    typescript:"/icons/typescripticon.svg",
+    threejs:"/icons/threejsicon.svg",
+    tailwind:"/icons/tailwindicon.svg"
 }
 export default iconpaths;
