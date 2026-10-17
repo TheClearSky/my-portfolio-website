@@ -1,6 +1,15 @@
 :root{
     font-size: clamp(12px,1.8vw,20px);
 }
+/* No native scrollbars: they take space and shift the layout as they come and go.
+   OverlayScrollbar.jsx draws a thin floating thumb instead. */
+*{
+    scrollbar-width: none;
+}
+*::-webkit-scrollbar{
+    width: 0;
+    height: 0;
+}
 *,*::after,*::before {
     margin: 0;
     padding: 0;

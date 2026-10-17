@@ -14,6 +14,7 @@
 
 .chatbox{
     background-color: rgba(137, 79, 184, 0.104);
+    position: relative;
 }
 .chatboxtitle{
     font-size: 1.5rem;
@@ -28,5 +29,5 @@
     display: flex;
     flex-direction: column;
     gap:0.5em;
-    overflow-y: scroll;
+    overflow-y: auto;
 }

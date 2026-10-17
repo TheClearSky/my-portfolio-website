@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useRef } from 'react';
+import OverlayScrollbar from './OverlayScrollbar';
 import "./MultiplayerChatbox.css";
 
 export default function ChatBox({ player1: p_player1, player2: p_player2, children: p_children }) {
+  const messagesRef = useRef(null);
   if (!p_player1) {
     p_player1 = "Waiting...";
   }
@@ -24,9 +26,10 @@ export default function ChatBox({ player1: p_player1, player2: p_player2, childr
       </div>
       <div className="chatbox">
         <div className="chatboxtitle">Messages</div>
-        <div className="chatboxmessages">
+        <div className="chatboxmessages" ref={messagesRef}>
           {p_children}
         </div>
+        <OverlayScrollbar target={messagesRef} />
       </div>
     </>
   )
