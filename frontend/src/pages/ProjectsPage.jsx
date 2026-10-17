@@ -8,7 +8,25 @@ export default function ProjectsPage() {
   return (
     <div className='projectslist'>
         <ProjectSection
-            newCategoryTitle={"Solo Projects"} 
+            newCategoryTitle={"Solo Projects"}
+            title={"ClearSky Academy"}
+            imagesrclist={["./images/projects/clearskyacademy1.webp","./images/projects/clearskyacademy2.webp","./images/projects/clearskyacademy3.webp","./images/projects/clearskyacademy4.webp"]}
+            iconnamelist={["typescript","react","vite","tailwind","threejs"]}
+            githublink={"https://github.com/TheClearSky/clearsky-academy"}
+            linktoproject={"https://theclearsky.github.io/clearsky-academy/"}
+        >
+            Animated Maths, Physics and Chemistry for CBSE Classes 9–12 and JEE, one chapter at a time. Every class is a collectible card that earns its finish as you learn, every chapter a path of topics to watch and play with, all on a procedural three.js night stage: a moonlit academy, painted trees and floating books.
+        </ProjectSection>
+        <ProjectSection
+            title={"Nodestra"}
+            imagesrclist={["./images/projects/nodestra1.webp","./images/projects/nodestra2.webp","./images/projects/nodestra3.webp","./images/projects/nodestra4.webp"]}
+            iconnamelist={["typescript","react","vite","tailwind","threejs"]}
+            githublink={"https://github.com/TheClearSky/nodestra"}
+            linktoproject={"https://theclearsky.github.io/nodestra/"}
+        >
+            Build instruments and songs from nodes and hear every change. Wire up oscillators, physically modelled strings and ready-made effects; draw timeline curves, find a tempo that fits your notes, and let Blip, a small conductor, guide you through. Built on my open-source node editor library, react-blender-nodes.
+        </ProjectSection>
+        <ProjectSection
             title={"My Portfolio Website ( This website ) [Stack:MERN]"}
             iconnamelist={["html","css","javascript","mongodb","expressjs","react","nodejs","reactrouter","redux","vite","babylonjs","firebase","render"]}
             githublink={"https://github.com/TheClearSky/my-portfolio-website"}
