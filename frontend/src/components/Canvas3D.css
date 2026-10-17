@@ -1,3 +1,9 @@
+.renderCanvasHolder {
+    position: relative;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
 .renderCanvas {
     height: 500px;
     min-width: 90%;
@@ -6,4 +12,39 @@
     background: transparent;
     outline: none;
     -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
+    /* Hidden until every model and material is in (Canvas3D.jsx), then faded in at once. */
+    opacity: 0;
+    transition: opacity 0.6s ease;
+}
+.renderCanvas.ready {
+    opacity: 1;
+}
+.sceneloader {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.8em;
+    font-family: Mufanpfs;
+    font-size: 1rem;
+    color: rgb(187, 187, 187);
+    pointer-events: none;
+}
+.sceneloaderring {
+    width: 2.6em;
+    height: 2.6em;
+    border-radius: 50%;
+    border: 2px solid rgba(187, 187, 187, 0.2);
+    border-top-color: rgb(176, 203, 255);
+    box-shadow: 0 0 0.8em rgba(176, 203, 255, 0.25);
+    animation: sceneloaderspin 0.9s linear infinite;
+}
+@keyframes sceneloaderspin {
+    to { transform: rotate(360deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+    .sceneloaderring { animation-duration: 3s; }
+    .renderCanvas { transition: none; }
 }
